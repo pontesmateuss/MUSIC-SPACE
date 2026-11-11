@@ -1,15 +1,20 @@
 {
-  "name": "nest-local-player",
+  "name": "music-space",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Sua música, no seu lugar. Player local e offline para desktop e mobile.",
+  "description": "Seu universo musical. Player local com login Google opcional.",
   "scripts": {
     "dev": "node scripts/serve.mjs",
     "start": "node scripts/serve.mjs",
     "build": "node scripts/build.mjs",
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check src/app.js && node --check src/metadata.js && node --check src/storage.js && node --check sw.js"
+    "check": "node --check src/app.js && node --check src/metadata.js && node --check src/storage.js && node --check sw.js && node --check src/auth.js && node --check scripts/auth.mjs && node --check scripts/serve.mjs"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "google-auth-library": "^11.3.4"
+  }
 }

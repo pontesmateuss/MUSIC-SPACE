@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0F172A" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#F8FAFC" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#090D1C" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#090D1C" media="(prefers-color-scheme: light)">
   <meta name="description" content="Um lugar só seu para guardar, organizar e ouvir música. Local, offline e sem assinaturas.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -12,12 +12,14 @@
   <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./assets/icon-192.png">
   <link rel="stylesheet" href="./src/styles.css">
-  <title>NEST — Sua música, no seu lugar.</title>
+  <link rel="stylesheet" href="./src/space.css">
+  <title>Music Space — Seu universo musical.</title>
 </head>
 <body>
+  <div class="starfield" aria-hidden="true"></div>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Navegação principal">
-      <a class="brand" href="#inicio" aria-label="NEST, início"><img src="./assets/mark.svg" alt=""><span>nest<span class="brand-dot">.</span></span></a>
+      <a class="brand" href="#inicio" aria-label="Music Space, início"><img src="./assets/mark.svg" alt=""><span>music<span class="brand-space">space.</span></span></a>
       <span class="side-label">SEU ESPAÇO</span>
       <nav id="main-nav"></nav>
       <div class="playlist-heading"><span class="side-label">SUAS PLAYLISTS</span><button class="icon-button" data-action="new-playlist" title="Criar playlist" aria-label="Criar playlist"><i data-icon="plus"></i></button></div>
@@ -30,24 +32,24 @@
     </aside>
     <main id="main">
       <header class="topbar">
-        <div class="breadcrumb"><span>Seu cantinho musical</span><span class="breadcrumb-dot">/</span><strong id="breadcrumb">Início</strong></div>
-        <div class="topbar-right"><span class="offline-badge" id="offline-status"><span class="status-dot"></span> Feito para ouvir offline</span><button class="avatar" data-action="settings" aria-label="Abrir ajustes">N</button></div>
+        <div class="breadcrumb"><span>Seu universo musical</span><span class="breadcrumb-dot">/</span><strong id="breadcrumb">Início</strong></div>
+        <div class="topbar-right"><span class="offline-badge" id="offline-status"><span class="status-dot"></span> Feito para ouvir offline</span><button class="account-button" id="account-button" aria-haspopup="dialog">Entrar</button><button class="icon-button motion-toggle" id="motion-toggle" aria-label="Pausar animações" aria-pressed="false">✦</button></div>
       </header>
       <div class="page-content">
         <section class="welcome" id="welcome">
-          <div><div class="eyebrow"><span class="tiny-sun">✳</span> A CASA DA SUA MÚSICA</div><h1>É bom ter você por aqui<span>.</span></h1><p>Suas músicas, suas memórias. Tudo no seu ritmo.</p></div>
+          <div><div class="eyebrow"><span class="tiny-sun">✳</span> SUA MÚSICA EM OUTRA ÓRBITA</div><h1>Encontre sua frequência<span>.</span></h1><p>Um universo de músicas. No seu próprio ritmo.</p></div>
           <button class="button button-primary" data-action="import"><i data-icon="plus"></i> Importar músicas</button>
         </section>
         <section class="hero" id="hero">
-          <div class="hero-copy"><span class="pill"><span class="status-dot"></span> MENOS RUÍDO. MAIS MÚSICA.</span><h2>Um lugar para<br>o que você <em>gosta de ouvir.</em></h2><p>Traga suas músicas favoritas.<br>A gente cuida do espaço, você dá o play.</p><button class="button button-light" data-action="import"><i data-icon="upload"></i> Trazer minhas músicas <i data-icon="arrow-right"></i></button><span class="hero-footnote">Sem anúncios. Sem mensalidades. Só você e a música.</span></div>
-          <div class="hero-art" aria-hidden="true"><div class="art-orbit"></div><div class="record"><div class="record-label"><img src="./assets/mark.svg" alt=""><span>SIDE A · NEST</span></div></div><div class="sleeve"><span class="sleeve-top">SOUNDS LIKE HOME</span><div class="landscape"><div class="sun"></div><div class="hill hill-back"></div><div class="hill hill-front"></div></div><div class="sleeve-title">slow<br>moments<span>VOL. 01 — A LITTLE CLOSER TO YOU</span></div></div><span class="art-caption">good music. feels like home.</span><span class="art-spark">✳</span></div>
+          <div class="hero-copy"><span class="pill"><span class="status-dot"></span> APERTE O PLAY. EXPLORE SEU UNIVERSO.</span><h2>Seu som.<br>Seu espaço.<br><em>Sem limites para sentir.</em></h2><p>Traga suas músicas favoritas.<br>Dê o play e deixe o mundo lá fora.</p><button class="button button-light" data-action="import"><i data-icon="upload"></i> Trazer minhas músicas <i data-icon="arrow-right"></i></button><span class="hero-footnote">Sem anúncios. Sem mensalidades. Só você e a música.</span></div>
+          <div class="space-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="space-planet"><div class="planet-core">♪</div></div><span class="satellite"></span><span class="space-coordinate">EST. 2026 / MUSIC SPACE</span></div>
         </section>
         <section class="library-section" aria-labelledby="library-title">
           <div class="section-heading"><div><div class="eyebrow" id="section-eyebrow">FEITA POR VOCÊ</div><h2 id="library-title">Sua biblioteca<span id="track-count"></span></h2></div><div class="view-actions"><button class="icon-button" data-action="import" aria-label="Adicionar músicas" title="Adicionar músicas"><i data-icon="plus"></i></button><button class="icon-button" id="layout-toggle" data-action="layout" aria-label="Alternar visualização" title="Alternar visualização"><i data-icon="grid"></i></button></div></div>
           <div class="library-toolbar"><div class="tabs" id="library-tabs" role="tablist" aria-label="Visualização da biblioteca"></div><div class="filter-tools"><label class="search"><i data-icon="search"></i><input id="search" type="search" placeholder="Buscar na sua biblioteca" aria-label="Buscar na sua biblioteca"><kbd>/</kbd></label><select id="sort" aria-label="Ordenar músicas"><option value="recent">Recentes</option><option value="title">Nome A–Z</option><option value="artist">Artista A–Z</option></select></div></div>
           <div id="collection-header"></div><div id="library" aria-live="polite"></div>
         </section>
-        <footer class="page-footer"><span><img src="./assets/mark.svg" alt=""> Um pequeno refúgio para grandes músicas.</span><span>Feito para ser seu <span class="footer-star">✳</span></span></footer>
+        <footer class="page-footer"><span><img src="./assets/mark.svg" alt=""> Music Space · Seu universo começa com um play.</span><span>Feito para ser seu <span class="footer-star">✳</span></span></footer>
       </div>
     </main>
   </div>
@@ -59,9 +61,11 @@
     <div class="player-extras"><button class="icon-button" data-action="queue" aria-label="Ver fila de reprodução" title="Fila de reprodução"><i data-icon="queue"></i></button><span class="player-divider"></span><button class="icon-button" id="mute" data-action="mute" aria-label="Silenciar"><i data-icon="volume"></i></button><input type="range" id="volume" min="0" max="1" step="0.01" value="0.75" aria-label="Volume"><button class="icon-button expand-button" data-action="expand" aria-label="Expandir player"><i data-icon="expand"></i></button></div>
   </section>
   <input id="file-input" type="file" accept=".mp3,.flac,.wav,.m4a,.aac,.ogg,.oga,.opus,.wma,.aiff,.aif,.mp4,.m4v,.webm,.mkv,.mov,.avi,.wmv,.ogv,.3gp" multiple hidden>
-  <div class="drop-overlay" id="drop-overlay" hidden><i data-icon="upload"></i><h2>Pode soltar. Você está em casa.</h2><p>Adicione suas músicas à biblioteca.</p></div>
+  <div class="drop-overlay" id="drop-overlay" hidden><i data-icon="upload"></i><h2>Pode soltar. Este espaço é seu.</h2><p>Adicione suas músicas à biblioteca.</p></div>
   <dialog id="dialog"><div class="dialog-top"><h2 id="dialog-title"></h2><button class="icon-button" data-action="close-dialog" aria-label="Fechar"><i data-icon="close"></i></button></div><div id="dialog-content"></div></dialog>
   <div id="toast" role="status" aria-live="polite"></div>
+  <dialog id="account-dialog" aria-labelledby="account-title"><div class="dialog-top"><h2 id="account-title">Seu espaço, conectado.</h2><button class="icon-button" id="account-close" aria-label="Fechar">×</button></div><p>Entre com Google para identificar sua sessão.</p><p class="account-note">Sua biblioteca continua neste navegador. As músicas não são enviadas nem sincronizadas com a conta.</p><div id="google-button"></div><p id="account-status" role="status"></p><button class="button button-ghost" id="account-retry" hidden>Tentar novamente</button><button class="button button-ghost" id="account-logout" hidden>Sair da conta</button></dialog>
+  <script type="module" src="./src/auth.js"></script>
   <audio id="audio" preload="metadata"></audio>
   <script type="module" src="./src/app.js"></script>
 </body>

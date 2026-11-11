@@ -6,16 +6,17 @@ function chunk(type, data) { const name = Buffer.from(type), body = Buffer.conca
 function distance(x,y,a,b) { const dx=b[0]-a[0],dy=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(y-a[1])*dy)/(dx*dx+dy*dy))); return Math.hypot(x-a[0]-t*dx,y-a[1]-t*dy); }
 const segments = [];
 function curve(a,b,c,d) { let previous=a; for (let i=1;i<=30;i++) { const t=i/30,u=1-t; const p=[u*u*u*a[0]+3*u*u*t*b[0]+3*u*t*t*c[0]+t*t*t*d[0],u*u*u*a[1]+3*u*u*t*b[1]+3*u*t*t*c[1]+t*t*t*d[1]]; segments.push([previous,p]); previous=p; } }
-for (const [start,end] of [[176,272],[248,336],[320,384]]) { curve([128,start],[188,start+8],[226,end-48],[256,end]); curve([256,end],[286,end-48],[324,start+8],[384,start]); }
-segments.push([[256,112],[256,184]],[[216,128],[256,88]],[[256,88],[296,128]]);
+for(let i=0;i<120;i++){ const t=i*Math.PI/60,u=(i+1)*Math.PI/60;segments.push([[256+122*Math.cos(t),256+122*Math.sin(t)],[256+122*Math.cos(u),256+122*Math.sin(u)]]);const point=v=>[256+190*Math.cos(v)*.866+65*Math.sin(v)*.5,256-190*Math.cos(v)*.5+65*Math.sin(v)*.866];segments.push([point(t),point(u)]); }
+segments.push([[275,174],[275,298]],[[275,174],[326,186]],[[326,186],[326,222]],[[326,222],[275,210]]);
+for(let i=0;i<32;i++){const t=i*Math.PI/16,u=(i+1)*Math.PI/16;segments.push([[252+22*Math.cos(t),298+22*Math.sin(t)],[252+22*Math.cos(u),298+22*Math.sin(u)]]);}
 for (const size of [192,512]) {
   const data=Buffer.alloc((size*4+1)*size);
   for(let y=0;y<size;y++) for(let x=0;x<size;x++) {
     const px=(x+.5)*512/size,py=(y+.5)*512/size;
     const dist=Math.min(...segments.map(([a,b])=>distance(px,py,a,b)));
-    const blend=Math.max(0,Math.min(1,(12-dist)*size/512+.5));
+    const blend=Math.max(0,Math.min(1,(7-dist)*size/512+.5));
     const offset=y*(size*4+1)+1+x*4;
-    for(let c=0;c<3;c++) data[offset+c]=Math.round([15,23,42][c]*(1-blend)+[6,182,212][c]*blend);
+    for(let c=0;c<3;c++) data[offset+c]=Math.round([9,13,28][c]*(1-blend)+[183,164,255][c]*blend);
     data[offset+3]=255;
   }
   const header=Buffer.alloc(13);header.writeUInt32BE(size);header.writeUInt32BE(size,4);header[8]=8;header[9]=6;

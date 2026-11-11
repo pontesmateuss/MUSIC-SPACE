@@ -1,10 +1,10 @@
-# NEST
+# Music Space
 
-Sua música, no seu lugar. Player local em português, com interface responsiva e instalação como **PWA no desktop, Android e iOS**. Sem contas, assinaturas, CDN, telemetria ou upload de áudio.
+Seu universo musical. Player local em português, com interface responsiva e instalação como **PWA no desktop, Android e iOS**. Login Google opcional, sem assinaturas ou upload de áudio.
 
 ## Executar
 
-Requisito de desenvolvimento: Node.js 20 ou superior. Não há dependências para instalar.
+Requisito de desenvolvimento: Node.js 20 ou superior. Instale as dependências com `npm install`.
 
 ```sh
 npm run build
@@ -17,7 +17,27 @@ Abra http://localhost:4173. Para servir a versão de produção:
 node scripts/serve.mjs --dist --port 4173
 ```
 
-## Instalação no computador e celular
+## Login com Google
+
+O login é opcional. O botão **Entrar** abre a autenticação oficial do Google; o servidor valida o ID token com `google-auth-library` antes de criar uma sessão em cookie HttpOnly. O script do Google só é carregado ao abrir o login. Nenhum áudio é enviado. A biblioteca continua compartilhada localmente neste navegador, independentemente da conta conectada: não há sincronização nem isolamento de arquivos por conta.
+
+1. No Google Cloud, configure a tela de consentimento e crie um **ID do cliente OAuth → Aplicativo da Web**.
+2. Adicione `http://localhost:4173` às **Origens JavaScript autorizadas**. Para produção, adicione a origem HTTPS exata do site.
+3. Configure as variáveis no terminal PowerShell e inicie o servidor:
+
+```powershell
+$env:GOOGLE_CLIENT_ID = 'SEU_CLIENT_ID.apps.googleusercontent.com'
+$env:APP_ORIGIN = 'http://localhost:4173'
+npm start
+```
+
+Não é necessário Client Secret para esse fluxo. `APP_ORIGIN` deve corresponder à origem usada no navegador (incluindo a porta, sem barra final). Para produção, use HTTPS e execute `node scripts/serve.mjs --dist` atrás do proxy HTTPS; apenas hospedar `dist/` estaticamente mantém o player, mas não disponibiliza login. O cookie usa Secure quando `APP_ORIGIN` é HTTPS. As sessões duram oito horas, ficam na memória de uma única instância e são encerradas ao reiniciar o servidor. Para múltiplas instâncias, substitua esse armazenamento por um repositório de sessões compartilhado.
+
+Sem `GOOGLE_CLIENT_ID`, a interface informa que o login ainda não foi configurado. Offline, a biblioteca permanece disponível, mas entrar/sair exige conexão. A integração real com Google precisa ser validada com o Client ID e a origem da implantação.
+
+Referência: [verificação oficial de ID tokens do Google](https://developers.google.com/identity/gsi/web/guides/verify-google-id-token).
+
+## Instalar o aplicativo
 
 - Chrome/Edge no computador ou Android: abra a aplicação e escolha **Instalar aplicativo** no menu do navegador, ou em **Ajustes e instalação** quando o navegador disponibilizar o botão.
 - iPhone/iPad: abra no Safari, toque em **Compartilhar → Adicionar à Tela de Início**.
@@ -70,6 +90,6 @@ npm test
 npm run build
 ```
 
-O build copia os módulos sem dependências. Sirva os arquivos por HTTP/HTTPS, não por `file://`. Ao publicar mudanças, incremente `CACHE` em `sw.js` para substituir o shell em cache. Os áudios do IndexedDB não são removidos durante atualizações do shell.
+O build copia o frontend; o servidor Node usa a biblioteca oficial google-auth-library. Sirva os arquivos por HTTP/HTTPS, não por `file://`. Ao publicar mudanças, incremente `CACHE` em `sw.js` para substituir o shell em cache. Os áudios do IndexedDB não são removidos durante atualizações do shell.
 
 Teste manual recomendado: importar MP3/FLAC/WAV reais, tocar/pausar/avançar/buscar, favoritar, adicionar a playlist, recarregar, fechar/reabrir instalado e desconectar da internet após o cache estar pronto. Verifique codecs e comportamento em segundo plano nos aparelhos de destino.
