@@ -33,8 +33,9 @@
     <main id="main">
       <header class="topbar">
         <div class="breadcrumb"><span>Seu universo musical</span><span class="breadcrumb-dot">/</span><strong id="breadcrumb">Início</strong></div>
-        <div class="topbar-right"><span class="offline-badge" id="offline-status"><span class="status-dot"></span> Feito para ouvir offline</span><button class="icon-button motion-toggle" id="motion-toggle" aria-label="Pausar animações" aria-pressed="false">✦</button></div>
+        <div class="topbar-right"><span class="offline-badge" id="offline-status"><span class="status-dot"></span> Feito para ouvir offline</span><button class="icon-button" id="galaxy-toggle" aria-pressed="false" aria-label="Ver biblioteca como galáxia" title="Galáxia">◍</button><button class="icon-button motion-toggle" id="motion-toggle" aria-label="Pausar animações" aria-pressed="false">✦</button></div>
       </header>
+      <section class="galaxy" id="galaxy" hidden aria-label="Biblioteca em formato de galáxia. A lista completa continua disponível ao desativar esta visão."><canvas></canvas><div class="galaxy-hud"><strong>Sua galáxia</strong><span class="galaxy-count"></span><small>Arraste para girar · clique em um planeta para tocar · estrelas brilhantes são favoritas</small></div><div class="galaxy-tip" hidden></div></section>
       <div class="page-content">
         <section class="welcome" id="welcome">
           <div><div class="eyebrow"><span class="tiny-sun">✳</span> SUA MÚSICA EM OUTRA ÓRBITA</div><h1>Encontre sua frequência<span>.</span></h1><p>Um universo de músicas. No seu próprio ritmo.</p></div>

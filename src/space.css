@@ -8,3 +8,9 @@ body{isolation:isolate}.app-shell{position:relative}.starfield{position:fixed;in
 @media(max-width:1100px){.space-art{right:-85px;opacity:.75}.hero-copy{width:75%}.brand{font-size:21px}.brand-space{font-size:20px}}
 @media(max-width:640px){.hero{min-height:390px}.hero-copy{width:100%;padding:26px 22px}.hero h2{font-size:35px;max-width:270px}.space-art{right:-160px;top:58%;opacity:.4;transform:translateY(-50%) scale(.8)}.hero-copy p{max-width:230px}.hero-footnote{max-width:220px}.breadcrumb>span:first-child:before{font-size:19px;letter-spacing:-.6px}.breadcrumb strong{display:none}.topbar-right{gap:7px}.offline-badge{display:none}.topbar{margin:0 16px}.motion-toggle{width:28px}.welcome h1{max-width:280px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+.galaxy{position:relative;margin:0 0 20px;height:min(62vh,560px);border-radius:24px;overflow:hidden;border:1px solid rgba(160,140,255,.25);background:radial-gradient(ellipse at 50% 50%,rgba(60,30,110,.35),rgba(6,8,22,.55));backdrop-filter:blur(8px);box-shadow:0 0 60px rgba(120,80,255,.15) inset}
+.galaxy[hidden]{display:none}.galaxy canvas{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+.galaxy-hud{position:absolute;left:18px;top:14px;display:grid;gap:2px;pointer-events:none;color:#e8ecff}.galaxy-hud span{color:#b9c3ff}.galaxy-hud small{color:#aab4e0;max-width:34ch}
+.galaxy-tip{position:absolute;left:0;top:0;padding:8px 12px;border-radius:12px;background:rgba(14,16,40,.85);border:1px solid rgba(180,160,255,.35);color:#fff;font-size:13px;pointer-events:none;white-space:nowrap}
+#galaxy-toggle[aria-pressed=true]{box-shadow:0 0 14px #9b7bff;color:#fff}

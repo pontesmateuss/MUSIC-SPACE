@@ -1,6 +1,7 @@
 import { icon, hydrateIcons } from './icons.js';
 import { loadTracks, loadAudio, saveTrack, removeTrack, getSetting, setSetting } from './storage.js';
 import { parseMetadata, formatTime } from './metadata.js';
+import { createGalaxy } from './galaxy.js';
 import { createDemo } from './demo.js';
 import { MEDIA_ACCEPT, MEDIA_FORMAT_LABEL, isMediaFile } from './formats.js';
 
@@ -293,3 +294,11 @@ async function init() {
   }
 }
 init();
+
+// Orbita: visão galáxia (alternância com a lista, que é a versão acessível)
+const galaxy = createGalaxy({ root: $('#galaxy'), getTracks: () => state.tracks, onPlay: (id, queue) => playTrack(id, queue), isPlaying: () => state.current });
+$('#galaxy-toggle').addEventListener('click', e => {
+  const on = !galaxy.open; on ? galaxy.show() : galaxy.hide();
+  e.currentTarget.setAttribute('aria-pressed', String(on)); document.body.classList.toggle('galaxy-on', on);
+});
+setInterval(() => { if (galaxy.open) galaxy.update(); }, 1500);
