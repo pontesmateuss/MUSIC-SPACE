@@ -33,7 +33,7 @@
     <main id="main">
       <header class="topbar">
         <div class="breadcrumb"><span>Seu universo musical</span><span class="breadcrumb-dot">/</span><strong id="breadcrumb">Início</strong></div>
-        <div class="topbar-right"><span class="offline-badge" id="offline-status"><span class="status-dot"></span> Feito para ouvir offline</span><button class="account-button" id="account-button" aria-haspopup="dialog">Entrar</button><button class="icon-button motion-toggle" id="motion-toggle" aria-label="Pausar animações" aria-pressed="false">✦</button></div>
+        <div class="topbar-right"><span class="offline-badge" id="offline-status"><span class="status-dot"></span> Feito para ouvir offline</span><button class="icon-button motion-toggle" id="motion-toggle" aria-label="Pausar animações" aria-pressed="false">✦</button></div>
       </header>
       <div class="page-content">
         <section class="welcome" id="welcome">
@@ -64,8 +64,7 @@
   <div class="drop-overlay" id="drop-overlay" hidden><i data-icon="upload"></i><h2>Pode soltar. Este espaço é seu.</h2><p>Adicione suas músicas à biblioteca.</p></div>
   <dialog id="dialog"><div class="dialog-top"><h2 id="dialog-title"></h2><button class="icon-button" data-action="close-dialog" aria-label="Fechar"><i data-icon="close"></i></button></div><div id="dialog-content"></div></dialog>
   <div id="toast" role="status" aria-live="polite"></div>
-  <dialog id="account-dialog" aria-labelledby="account-title"><div class="dialog-top"><h2 id="account-title">Seu espaço, conectado.</h2><button class="icon-button" id="account-close" aria-label="Fechar">×</button></div><p>Entre com Google para identificar sua sessão.</p><p class="account-note">Sua biblioteca continua neste navegador. As músicas não são enviadas nem sincronizadas com a conta.</p><div id="google-button"></div><p id="account-status" role="status"></p><button class="button button-ghost" id="account-retry" hidden>Tentar novamente</button><button class="button button-ghost" id="account-logout" hidden>Sair da conta</button></dialog>
-  <script type="module" src="./src/auth.js"></script>
+  <script type="module" src="./src/motion.js"></script>
   <audio id="audio" preload="metadata"></audio>
   <script type="module" src="./src/app.js"></script>
 </body>

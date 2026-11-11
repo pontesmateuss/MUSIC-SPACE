@@ -2,16 +2,13 @@ import http from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createAuthHandler } from './auth.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', process.argv.includes('--dist') ? 'dist' : '.');
 const portIndex = process.argv.indexOf('--port');
 const port = portIndex >= 0 ? Number(process.argv[portIndex + 1]) : 4173;
-const auth = createAuthHandler({ origin: process.env.APP_ORIGIN || `http://localhost:${port}` });
 const types = { '.html':'text/html; charset=utf-8', '.js':'text/javascript; charset=utf-8', '.css':'text/css; charset=utf-8', '.svg':'image/svg+xml', '.png':'image/png', '.webmanifest':'application/manifest+json', '.wav':'audio/wav' };
 const server = http.createServer(async (request, response) => {
   try {
     const pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
-    if (await auth(request, response, pathname)) return;
     const target = path.resolve(root, `.${pathname === '/' ? '/index.html' : pathname}`);
     const relative = path.relative(root, target);
     if (relative.startsWith('..') || path.isAbsolute(relative) || relative.split(path.sep).some(part => part.startsWith('.')) || !['GET','HEAD'].includes(request.method)) { response.writeHead(403); response.end('Forbidden'); return; }
