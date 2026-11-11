@@ -2,12 +2,14 @@ import { icon, hydrateIcons } from './icons.js';
 import { loadTracks, loadAudio, saveTrack, removeTrack, getSetting, setSetting } from './storage.js';
 import { parseMetadata, formatTime } from './metadata.js';
 import { createDemo } from './demo.js';
+import { MEDIA_ACCEPT, MEDIA_FORMAT_LABEL, isMediaFile } from './formats.js';
 
 const $ = selector => document.querySelector(selector);
 const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 const state = { tracks:[], playlists:[], view:'home', tab:'songs', query:'', sort:'recent', collection:null, grid:false, current:null, queue:[], shuffle:false, repeat:0, importing:false, ready:false };
 const views = [['home','home','Início'],['songs','library','Todas as músicas'],['albums','album','Álbuns'],['artists','artist','Artistas'],['favorites','heart','Favoritas']];
 const audio = $('#audio');
+$('#file-input').accept = MEDIA_ACCEPT;
 const coverURLs = new Map();
 let audioURL, loadToken = 0, toastTimer, installPrompt, previousVolume = .75, dragDepth = 0;
 const palette = [['#334155','#1E293B'],['#164E63','#1E293B'],['#373B70','#28334D'],['#155E75','#164E63'],['#475569','#334155']];
@@ -56,7 +58,7 @@ function render() {
   const library = $('#library');
   if (!tracks.length) {
     const emptyLibrary = !state.tracks.length;
-    library.innerHTML = `<div class="empty-state"><div class="empty-symbol">${icon(emptyLibrary ? 'upload' : state.query ? 'search' : 'music')}</div><h3>${emptyLibrary ? 'Sua coleção começa com uma música.' : state.query ? 'Nenhuma música por aqui.' : state.view === 'favorites' || state.tab === 'favorites' ? 'Guarde aqui as suas preferidas.' : 'Esse espaço está esperando por música.'}</h3><p>${emptyLibrary ? 'Arraste seus arquivos para cá ou escolha no seu dispositivo.' : state.query ? 'Experimente buscar por outro nome, artista ou álbum.' : currentPlaylist() ? 'Use o menu ••• de uma música para adicionar a esta playlist.' : 'Toque no coração de uma música para encontrá-la aqui.'}</p><div class="empty-actions">${emptyLibrary ? '<button class="text-button" data-action="import">Escolher arquivos</button><span style="color:var(--muted)">·</span><button class="text-button" data-action="demo">Experimentar com um som</button>' : state.query ? '<button class="text-button" data-action="clear-search">Limpar busca</button>' : '<button class="text-button" data-view="songs">Explorar biblioteca</button>'}</div>${emptyLibrary ? '<p class="empty-formats">MP3, FLAC E WAV · DIRETO DO SEU DISPOSITIVO</p>' : ''}</div>`;
+    library.innerHTML = `<div class="empty-state"><div class="empty-symbol">${icon(emptyLibrary ? 'upload' : state.query ? 'search' : 'music')}</div><h3>${emptyLibrary ? 'Sua coleção começa com uma música.' : state.query ? 'Nenhuma música por aqui.' : state.view === 'favorites' || state.tab === 'favorites' ? 'Guarde aqui as suas preferidas.' : 'Esse espaço está esperando por música.'}</h3><p>${emptyLibrary ? 'Arraste seus arquivos para cá ou escolha no seu dispositivo.' : state.query ? 'Experimente buscar por outro nome, artista ou álbum.' : currentPlaylist() ? 'Use o menu ••• de uma música para adicionar a esta playlist.' : 'Toque no coração de uma música para encontrá-la aqui.'}</p><div class="empty-actions">${emptyLibrary ? '<button class="text-button" data-action="import">Escolher arquivos</button><span style="color:var(--muted)">·</span><button class="text-button" data-action="demo">Experimentar com um som</button>' : state.query ? '<button class="text-button" data-action="clear-search">Limpar busca</button>' : '<button class="text-button" data-view="songs">Explorar biblioteca</button>'}</div>${emptyLibrary ? '<p class="empty-formats">ÁUDIO E VÍDEO · MP3, M4A, MP4, WEBM E MAIS</p>' : ''}</div>`;
     return;
   }
   const groupMode = !state.collection && (state.tab === 'albums' || state.tab === 'artists') && !currentPlaylist() && state.view !== 'favorites';
@@ -142,8 +144,8 @@ async function measureDuration(file) {
 async function importFiles(files, demo = false) {
   if (!state.ready) { toast('A biblioteca ainda não está disponível. Recarregue a página.'); return; }
   if (state.importing) { toast('Aguarde a importação atual terminar.'); return; }
-  const all = [...files], valid = all.filter(f => /\.(mp3|flac|wav)$/i.test(f.name));
-  if (!valid.length) { toast('Selecione arquivos MP3, FLAC ou WAV.'); return; }
+  const all = [...files], valid = all.filter(isMediaFile);
+  if (!valid.length) { toast(`Selecione arquivos de áudio ou vídeo: ${MEDIA_FORMAT_LABEL}.`); return; }
   state.importing = true;
   let imported = 0, duplicates = 0, failed = all.length - valid.length;
   let first;
@@ -203,7 +205,7 @@ async function deleteTrack(id) {
 function queueDialog() { showDialog('A seguir', state.queue.length ? state.queue.map(id => state.tracks.find(t => t.id === id)).filter(Boolean).map(t => `<button class="queue-item ${t.id === state.current ? 'active' : ''}" data-queue-track="${t.id}">${cover(t)}<span class="track-text"><strong class="track-name">${escape(t.title)}</strong><span class="track-artist">${escape(t.artist)}</span></span></button>`).join('') : '<p>Dê play em uma música para começar sua fila.</p>'); }
 async function settingsDialog() {
   const bytes = state.tracks.reduce((sum,t) => sum + t.size + (t.cover?.size || 0), 0);
-  showDialog('Seu NEST, do seu jeito', `<div class="setting-card"><h3>${icon('download')} Instale e sinta-se em casa</h3><p>Use o NEST como aplicativo no celular ou computador. Depois do primeiro carregamento completo, sua biblioteca funciona offline.</p>${installPrompt ? '<button class="button button-primary" data-action="install">Instalar NEST</button>' : '<p>No Chrome/Edge, use “Instalar aplicativo” no menu do navegador. No iPhone/iPad, abra no Safari e toque em Compartilhar → Adicionar à Tela de Início.</p>'}</div><div class="setting-card"><h3>Sua música fica neste dispositivo</h3><p>${state.tracks.length} músicas · ${(bytes / 1048576).toFixed(1)} MB de arquivos locais. Nenhum áudio é enviado para servidores.</p><p>Limpar os dados do navegador remove a biblioteca. Guarde os arquivos originais; cada navegador e dispositivo tem sua própria coleção.</p><button class="button button-ghost" data-action="persist-storage">Proteger armazenamento local</button></div><div class="setting-card"><h3>Pequenos atalhos</h3><p>Espaço: play/pausa · ← / →: voltar ou avançar 5 segundos · /: buscar · Esc: fechar player expandido.</p><p>MP3, WAV e FLAC. A reprodução depende dos codecs disponíveis no dispositivo.</p></div><p style="text-align:center">NEST 1.0 · Sem anúncios. Sem assinaturas. Só música.</p>`);
+  showDialog('Seu NEST, do seu jeito', `<div class="setting-card"><h3>${icon('download')} Instale e sinta-se em casa</h3><p>Use o NEST como aplicativo no celular ou computador. Depois do primeiro carregamento completo, sua biblioteca funciona offline.</p>${installPrompt ? '<button class="button button-primary" data-action="install">Instalar NEST</button>' : '<p>No Chrome/Edge, use “Instalar aplicativo” no menu do navegador. No iPhone/iPad, abra no Safari e toque em Compartilhar → Adicionar à Tela de Início.</p>'}</div><div class="setting-card"><h3>Sua música fica neste dispositivo</h3><p>${state.tracks.length} músicas · ${(bytes / 1048576).toFixed(1)} MB de arquivos locais. Nenhum áudio é enviado para servidores.</p><p>Limpar os dados do navegador remove a biblioteca. Guarde os arquivos originais; cada navegador e dispositivo tem sua própria coleção.</p><button class="button button-ghost" data-action="persist-storage">Proteger armazenamento local</button></div><div class="setting-card"><h3>Pequenos atalhos</h3><p>Espaço: play/pausa · ← / →: voltar ou avançar 5 segundos · /: buscar · Esc: fechar player expandido.</p><p>${MEDIA_FORMAT_LABEL}. Nos vídeos, o NEST reproduz o áudio. A reprodução depende dos codecs disponíveis no dispositivo.</p></div><p style="text-align:center">NEST 1.0 · Sem anúncios. Sem assinaturas. Só música.</p>`);
 }
 async function action(name) {
   if (name === 'import') $('#file-input').click();

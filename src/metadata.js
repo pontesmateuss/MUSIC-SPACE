@@ -1,3 +1,4 @@
+import { stripMediaExtension } from './formats.js';
 const latin = new TextDecoder('iso-8859-1');
 const utf8 = new TextDecoder('utf-8');
 const ascii = bytes => String.fromCharCode(...bytes);
@@ -104,7 +105,7 @@ function readWav(data, result) {
   }
 }
 export function fallbackMetadata(name) {
-  const base = name.replace(/\.(mp3|flac|wav)$/i, ''), parts = base.split(' - ');
+  const base = stripMediaExtension(name), parts = base.split(' - ');
   return { title:parts.length > 1 ? parts.slice(1).join(' - ') : base, artist:parts.length > 1 ? parts[0] : 'Artista desconhecido', album:'Sem álbum', duration:0 };
 }
 export async function parseMetadata(file) {

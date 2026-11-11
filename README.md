@@ -28,7 +28,7 @@ Esta entrega é uma PWA compartilhada entre Web e Mobile. **Não inclui APK, IPA
 
 ## Funcionalidades
 
-- Importação múltipla por seletor e arrastar/soltar de MP3, FLAC e WAV.
+- Importação múltipla por seletor e arrastar/soltar de áudio (MP3, FLAC, WAV, M4A, AAC, OGG, OGA, OPUS, WMA, AIFF, AIF) e vídeo (MP4, M4V, WEBM, MKV, MOV, AVI, WMV, OGV, 3GP). Nos vídeos, o player reproduz o áudio e preserva o arquivo original.
 - Arquivos e capas persistidos em IndexedDB; deduplicação por SHA-256 do conteúdo.
 - Leitura local de ID3v2.2/v2.3/v2.4 e ID3v1, comentários/capas FLAC e tags RIFF INFO em WAV. Metadados ausentes usam o nome do arquivo, com edição manual disponível.
 - Músicas, álbuns, artistas, favoritas, pesquisa sem distinção de acentos, ordenação e modos lista/grade.
@@ -42,7 +42,7 @@ Esta entrega é uma PWA compartilhada entre Web e Mobile. **Não inclui APK, IPA
 
 Os arquivos permanecem neste navegador/dispositivo, sem sincronização entre aparelhos. Apagar os dados do site, usar navegação privada ou a limpeza automática de armazenamento pelo navegador pode apagar a biblioteca. Mantenha os arquivos originais. O botão de armazenamento persistente solicita proteção ao navegador, que pode recusá-la.
 
-O suporte real a MP3/FLAC/WAV depende do codec e navegador; WAV comprimido, por exemplo, pode não ser reproduzível. Tags comprimidas, criptografadas ou com unsynchronisation não são interpretadas. A leitura de tags limita-se aos primeiros 16 MiB; metadados podem ser editados manualmente. Cada arquivo é lido integralmente para calcular seu hash, sequencialmente, portanto arquivos muito grandes podem exigir memória adicional.
+A importação não converte os arquivos. A reprodução depende do codec e navegador; AVI, MKV, WMV e WMA podem ser importados, mas não tocar no navegador; WAV comprimido, por exemplo, pode não ser reproduzível. Tags comprimidas, criptografadas ou com unsynchronisation não são interpretadas. A leitura de tags limita-se aos primeiros 16 MiB; metadados podem ser editados manualmente. Cada arquivo é lido integralmente para calcular seu hash, sequencialmente, portanto arquivos muito grandes podem exigir memória adicional.
 
 ## Estrutura
 
