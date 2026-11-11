@@ -10,7 +10,7 @@ const views = [['home','home','Início'],['songs','library','Todas as músicas']
 const audio = $('#audio');
 const coverURLs = new Map();
 let audioURL, loadToken = 0, toastTimer, installPrompt, previousVolume = .75, dragDepth = 0;
-const palette = [['#a5996b','#465941'],['#bc8a6c','#624a43'],['#687c7b','#304b53'],['#9c8b9d','#4d4459'],['#c0b193','#636b4b']];
+const palette = [['#334155','#1E293B'],['#164E63','#1E293B'],['#373B70','#28334D'],['#155E75','#164E63'],['#475569','#334155']];
 function cover(track, extra = '') {
   if (!track) return `<span class="track-art ${extra}">${icon('music')}</span>`;
   let url = coverURLs.get(track.id);
@@ -56,7 +56,7 @@ function render() {
   const library = $('#library');
   if (!tracks.length) {
     const emptyLibrary = !state.tracks.length;
-    library.innerHTML = `<div class="empty-state"><div class="empty-symbol">${icon(emptyLibrary ? 'upload' : state.query ? 'search' : 'music')}</div><h3>${emptyLibrary ? 'Sua coleção começa com uma música.' : state.query ? 'Nenhuma música por aqui.' : state.view === 'favorites' || state.tab === 'favorites' ? 'Guarde aqui as suas preferidas.' : 'Esse espaço está esperando por música.'}</h3><p>${emptyLibrary ? 'Arraste seus arquivos para cá ou escolha no seu dispositivo.' : state.query ? 'Experimente buscar por outro nome, artista ou álbum.' : currentPlaylist() ? 'Use o menu ••• de uma música para adicionar a esta playlist.' : 'Toque no coração de uma música para encontrá-la aqui.'}</p><div class="empty-actions">${emptyLibrary ? '<button class="text-button" data-action="import">Escolher arquivos</button><span style="color:#55624a">·</span><button class="text-button" data-action="demo">Experimentar com um som</button>' : state.query ? '<button class="text-button" data-action="clear-search">Limpar busca</button>' : '<button class="text-button" data-view="songs">Explorar biblioteca</button>'}</div>${emptyLibrary ? '<p class="empty-formats">MP3, FLAC E WAV · DIRETO DO SEU DISPOSITIVO</p>' : ''}</div>`;
+    library.innerHTML = `<div class="empty-state"><div class="empty-symbol">${icon(emptyLibrary ? 'upload' : state.query ? 'search' : 'music')}</div><h3>${emptyLibrary ? 'Sua coleção começa com uma música.' : state.query ? 'Nenhuma música por aqui.' : state.view === 'favorites' || state.tab === 'favorites' ? 'Guarde aqui as suas preferidas.' : 'Esse espaço está esperando por música.'}</h3><p>${emptyLibrary ? 'Arraste seus arquivos para cá ou escolha no seu dispositivo.' : state.query ? 'Experimente buscar por outro nome, artista ou álbum.' : currentPlaylist() ? 'Use o menu ••• de uma música para adicionar a esta playlist.' : 'Toque no coração de uma música para encontrá-la aqui.'}</p><div class="empty-actions">${emptyLibrary ? '<button class="text-button" data-action="import">Escolher arquivos</button><span style="color:var(--muted)">·</span><button class="text-button" data-action="demo">Experimentar com um som</button>' : state.query ? '<button class="text-button" data-action="clear-search">Limpar busca</button>' : '<button class="text-button" data-view="songs">Explorar biblioteca</button>'}</div>${emptyLibrary ? '<p class="empty-formats">MP3, FLAC E WAV · DIRETO DO SEU DISPOSITIVO</p>' : ''}</div>`;
     return;
   }
   const groupMode = !state.collection && (state.tab === 'albums' || state.tab === 'artists') && !currentPlaylist() && state.view !== 'favorites';

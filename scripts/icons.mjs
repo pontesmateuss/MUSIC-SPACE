@@ -15,7 +15,7 @@ for (const size of [192,512]) {
     const dist=Math.min(...segments.map(([a,b])=>distance(px,py,a,b)));
     const blend=Math.max(0,Math.min(1,(12-dist)*size/512+.5));
     const offset=y*(size*4+1)+1+x*4;
-    for(let c=0;c<3;c++) data[offset+c]=Math.round([25,28,24][c]*(1-blend)+[190,201,163][c]*blend);
+    for(let c=0;c<3;c++) data[offset+c]=Math.round([15,23,42][c]*(1-blend)+[6,182,212][c]*blend);
     data[offset+3]=255;
   }
   const header=Buffer.alloc(13);header.writeUInt32BE(size);header.writeUInt32BE(size,4);header[8]=8;header[9]=6;
