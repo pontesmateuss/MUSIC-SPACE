@@ -1,0 +1,15 @@
+{
+  "name": "nest-local-player",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Sua música, no seu lugar. Player local e offline para desktop e mobile.",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "start": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check src/app.js && node --check src/metadata.js && node --check src/storage.js && node --check sw.js"
+  },
+  "engines": { "node": ">=20" }
+}
