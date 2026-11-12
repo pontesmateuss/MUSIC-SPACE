@@ -21,6 +21,12 @@ Site e app web para guardar músicas, em HTML, CSS e JavaScript puros (sem build
 - Músicas de exemplo: `DEMO` em `js/core.js` (apague para começar vazio).
 - Fontes: Bricolage Grotesque e Instrument Serif, carregadas do Google Fonts.
 
+## Arquivos aceitos
+MP3, WAV, OGG, M4A, AAC, FLAC, OPUS e também vídeos (MP4, WEBM, M4V, MOV, MKV): do vídeo
+toca só o áudio. É possível escolher vários arquivos de uma vez; o título e o artista vêm
+do nome do arquivo no formato `Música - Artista`. O que o navegador não consegue abrir é
+recusado na hora (MP4 com vídeo H.264 e áudio AAC abre em todos os navegadores comuns).
+
 ## Onde ficam os dados
 Os dados das músicas ficam no `localStorage` e os arquivos de áudio no `IndexedDB`,
 os dois só neste navegador. Para ligar a um backend depois, troque as funções de
