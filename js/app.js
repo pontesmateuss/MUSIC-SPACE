@@ -363,7 +363,7 @@
   const modal = $('#addModal'), form = $('#addForm');
   const fileInput = $('#file'), drop = $('#drop'), fileName = $('#fileName');
   const prev = $('#previewPlanet');
-  let opener = null, file = null, fileDur = 0, reroll = 0, prevQueued = false;
+  let opener = null, files = [], importing = false, reroll = 0, prevQueued = false;
 
   $('#moodPick').innerHTML = MS.MOODS.map((m, i) =>
     `<label class="mood-opt"><input type="radio" name="mood" value="${m.id}"${m.id === 'noturno' ? ' checked' : ''}><span style="--c:hsl(${m.hue} 85% 68%)"><i></i>${m.name}</span></label>`).join('');
@@ -384,35 +384,41 @@
   form.addEventListener('input', paintPreview);
   $('#reroll').addEventListener('click', () => { reroll++; paintPreview(); });
 
-  function setFile(f) {
-    if (!f) return;
-    if (!/\.(mp3|wav|ogg|m4a|aac|flac|opus|mp4|m4v|webm|mov|mkv)$/i.test(f.name)) {
-      toast('Escolha um arquivo de áudio ou vídeo, como MP3, WAV, M4A ou MP4.'); return;
-    }
-    file = f; fileDur = 0;
-    fileName.textContent = f.name;
-    drop.classList.add('has-file');
-    if (!form.title.value.trim()) {
-      form.title.value = f.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ').trim();
-      paintPreview();
-    }
-    const url = URL.createObjectURL(f), a = new Audio();
-    a.preload = 'metadata';
-    a.onloadedmetadata = () => { if (isFinite(a.duration)) fileDur = Math.round(a.duration); URL.revokeObjectURL(url); };
-    a.onerror = () => URL.revokeObjectURL(url);
-    a.src = url;
+  function showFiles() {
+    const batch = files.length > 1;
+    drop.classList.toggle('has-file', files.length > 0);
+    fileName.textContent = files.length
+      ? files.length + ' arquivo(s): ' + files.map(f => f.name).join(', ')
+      : 'Selecione vários com Ctrl ou Shift, ou arraste os arquivos para cá. Você também pode escolher mais arquivos de outra pasta.';
+    form.title.disabled = batch;
+    form.title.required = !batch;
+    form.title.placeholder = batch ? 'Cada música usará o nome do seu arquivo' : '';
+    form.link.disabled = batch;
+    $('#batchHint').hidden = !batch;
+    $('button[type="submit"]', form).textContent = batch ? 'Guardar ' + files.length + ' músicas' : 'Guardar música';
+  }
+  function setFiles(incoming) {
+    if (importing) return;
+    const result = MS.importFiles.select(files, incoming);
+    files = result.files;
+    if (result.rejected) toast(result.rejected + ' arquivo(s) ignorado(s): escolha áudio ou vídeo.');
+    if (files.length === 1 && !form.title.value.trim()) form.title.value = MS.importFiles.title(files[0]);
+    fieldError('title', '');
+    showFiles(); paintPreview();
   }
   $('#pick').addEventListener('click', () => fileInput.click());
-  fileInput.addEventListener('change', () => setFile(fileInput.files[0]));
-  ['dragenter', 'dragover'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('is-drag'); }));
-  ['dragleave', 'drop'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('is-drag'); }));
-  drop.addEventListener('drop', (e) => setFile(e.dataTransfer.files[0]));
+  fileInput.addEventListener('change', () => { setFiles(fileInput.files); fileInput.value = ''; });
+  $('#clearFiles').addEventListener('click', () => { files = []; form.title.value = ''; showFiles(); paintPreview(); });
+  ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('is-drag'); }));
+  ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('is-drag'); }));
+  drop.addEventListener('drop', e => setFiles(e.dataTransfer.files));
 
   function openModal() {
     opener = document.activeElement;
-    form.reset(); file = null; fileDur = 0; reroll = 0;
+    if (importing) return;
+    form.reset(); files = []; reroll = 0;
     drop.classList.remove('has-file');
-    fileName.textContent = 'Ou arraste o arquivo para cá. Ele fica só neste navegador.';
+    showFiles();
     $$('.err', form).forEach((e) => (e.textContent = ''));
     $$('input', form).forEach((i) => i.removeAttribute('aria-invalid'));
     modal.hidden = false;
@@ -423,6 +429,7 @@
     setTimeout(() => form.title.focus(), 60);
   }
   function closeModal() {
+    if (importing) return;
     modal.classList.remove('is-open');
     document.documentElement.classList.remove('lock');
     setTimeout(() => { modal.hidden = true; }, 360);
@@ -451,24 +458,44 @@
   }
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const title = form.title.value.trim(), link = form.link.value.trim();
+    if (importing) return;
+    const title = form.title.value.trim(), link = files.length > 1 ? '' : form.link.value.trim();
     let ok = true;
     fieldError('title', ''); fieldError('link', '');
-    if (!title) { fieldError('title', 'Digite o nome da música.'); ok = false; }
+    if (!title && !files.length) { fieldError('title', 'Digite o nome da música.'); ok = false; }
     if (link && !safeUrl(link)) { fieldError('link', 'Cole um link completo, começando com https://'); ok = false; }
     if (!ok) { (form.querySelector('[aria-invalid="true"]') || form.title).focus(); return; }
 
-    const song = MS.store.add({
+    const details = {
       title, album: form.album.value.trim(), artist: form.artist.value.trim(), mood: form.mood.value, genre: form.genre.value.trim(),
-      link, seed: currentSeed(), hasFile: !!file, fileName: file ? file.name : '', dur: fileDur,
-    });
-    if (file) {
-      try { await MS.store.putBlob(song.id, file); }
-      catch (err) {
-        MS.store.update(song.id, { hasFile: false });
-        toast('Não deu para salvar o arquivo neste navegador. A música foi guardada só com os dados.', { ms: 6500 });
-      }
+      link, seed: currentSeed(), hasFile: false, fileName: '', dur: 0,
+    };
+    const controls = $$('button,input', form).map(control => [control, control.disabled]);
+    const submit = $('button[type="submit"]', form);
+    let saved = [], failed = [];
+    importing = true;
+    controls.forEach(([control]) => { control.disabled = true; });
+    form.setAttribute('aria-busy', 'true');
+    try {
+      if (files.length) ({ saved, failed } = await MS.importFiles.save(files, details, (done, total) => {
+        submit.textContent = 'Guardando ' + done + ' de ' + total + '…';
+      }));
+      else saved = [MS.store.add(details)];
+    } catch (error) {
+      toast('Não foi possível concluir a importação. Tente novamente.');
+      return;
+    } finally {
+      importing = false;
+      controls.forEach(([control, disabled]) => { control.disabled = disabled; });
+      form.removeAttribute('aria-busy');
+      showFiles();
     }
+    if (failed.length) {
+      files = failed; showFiles(); refresh();
+      toast(saved.length + ' música(s) guardada(s). ' + failed.length + ' arquivo(s) não puderam ser salvos e continuam selecionados para tentar novamente.', { ms: 8000 });
+      return;
+    }
+    const song = saved[0];
     closeModal();
     state.mood = null; state.q = ''; el.q.value = '';
     refresh();
@@ -479,7 +506,7 @@
     const delay = needScroll && !U.reduce ? 750 : 380;
     setTimeout(() => {
       if (state.view === 'orbit') MS.orbit.launchComet(song, () => selectSong(song.id));
-      toast('Música guardada.');
+      toast(saved.length === 1 ? 'Música guardada.' : saved.length + ' músicas guardadas.');
     }, delay);
   });
 

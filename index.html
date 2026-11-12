@@ -296,6 +296,7 @@
         <input name="artist" maxlength="60" autocomplete="off">
       </label>
 
+      <p id="batchHint" class="preview-note" hidden>Cada arquivo vira uma música com seu próprio nome. Artista, álbum, gênero e humor serão aplicados a todas as selecionadas.</p>
       <fieldset class="mood-pick">
         <legend>Humor</legend>
         <div id="moodPick"></div>
@@ -318,7 +319,8 @@
       <div class="drop" id="drop">
         <input type="file" id="file" accept="audio/*,video/mp4,video/webm,.mp3,.wav,.ogg,.m4a,.aac,.flac,.opus,.mp4,.m4v,.webm,.mov,.mkv" multiple hidden>
         <button type="button" class="btn btn-ghost btn-sm" id="pick"><svg class="i" aria-hidden="true"><use href="#i-upload"/></svg>Escolher arquivos</button>
-        <span id="fileName">Aceita MP3, WAV, M4A e MP4. Dá para escolher vários de uma vez. Ficam só neste navegador.</span>
+        <button type="button" class="btn btn-text btn-sm" id="clearFiles">Limpar seleção</button>
+        <span id="fileName" role="status">Aceita MP3, WAV, M4A e MP4. Dá para escolher vários de uma vez. Ficam só neste navegador.</span>
       </div>
 
       <div class="modal-actions">
@@ -335,6 +337,7 @@
 <script src="js/audio.js"></script>
 <script src="js/cosmos.js"></script>
 <script src="js/orbit.js"></script>
+<script src="js/import.js"></script>
 <script src="js/app.js"></script>
 <script src="js/navigation.js"></script>
 </body>
