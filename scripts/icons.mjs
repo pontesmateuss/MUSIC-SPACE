@@ -16,3 +16,21 @@ for (const name of ['icon.svg', 'mark.svg']) {
   await writeFile(new URL(`../assets/${name}`, import.meta.url), svg);
 }
 console.log('Brand icons verified (32, 180, 192 and 512px).');
+
+// Windows shortcuts use ICO containers, with PNG frames for crisp scaling.
+const sizes = [32, 192];
+const frames = await Promise.all(sizes.map(size => readFile(new URL(`../assets/icon-${size}.png`, import.meta.url))));
+const directory = Buffer.alloc(6 + sizes.length * 16);
+directory.writeUInt16LE(1, 2);
+directory.writeUInt16LE(sizes.length, 4);
+let offset = directory.length;
+frames.forEach((frame, i) => {
+  const entry = 6 + i * 16;
+  directory[entry] = directory[entry + 1] = sizes[i];
+  directory.writeUInt16LE(1, entry + 4);
+  directory.writeUInt16LE(32, entry + 6);
+  directory.writeUInt32LE(frame.length, entry + 8);
+  directory.writeUInt32LE(offset, entry + 12);
+  offset += frame.length;
+});
+await writeFile(new URL('../assets/music-space.ico', import.meta.url), Buffer.concat([directory, ...frames]));
