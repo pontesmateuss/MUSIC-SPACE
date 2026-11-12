@@ -1,72 +1,320 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#090D1C" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#090D1C" media="(prefers-color-scheme: light)">
-  <meta name="description" content="Um lugar só seu para guardar, organizar e ouvir música. Local, offline e sem assinaturas.">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="./assets/icon-192.png">
-  <link rel="stylesheet" href="./src/styles.css">
-  <link rel="stylesheet" href="./src/space.css">
-  <title>Music Space — Seu universo musical.</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Music Space: guarde suas músicas num universo só seu</title>
+<meta name="description" content="Guarde suas músicas favoritas e veja cada uma virar um planeta. Sem anúncios, sem mensalidades.">
+<meta name="theme-color" content="#070814">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='9' fill='%23a58cf2'/%3E%3Cellipse cx='16' cy='17' rx='14' ry='4.5' fill='none' stroke='%23d9ccff' stroke-width='1.4' transform='rotate(-18 16 16)'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="starfield" aria-hidden="true"></div>
-  <div class="app-shell">
-    <aside class="sidebar" aria-label="Navegação principal">
-      <a class="brand" href="#inicio" aria-label="Music Space, início"><img src="./assets/mark.svg" alt=""><span>music<span class="brand-space">space.</span></span></a>
-      <span class="side-label">SEU ESPAÇO</span>
-      <nav id="main-nav"></nav>
-      <div class="playlist-heading"><span class="side-label">SUAS PLAYLISTS</span><button class="icon-button" data-action="new-playlist" title="Criar playlist" aria-label="Criar playlist"><i data-icon="plus"></i></button></div>
-      <div id="playlist-nav"></div>
-      <p class="playlist-hint" id="playlist-hint">Um lugar para cada momento.<br>Crie sua primeira playlist.</p>
-      <div class="sidebar-bottom">
-        <div class="local-note"><span class="status-dot"></span><span>Suas músicas ficam com você<small>100% local. Sempre seu.</small></span></div>
-        <button class="settings-button" data-action="settings"><i data-icon="settings"></i> Ajustes e instalação <i data-icon="arrow-up-right"></i></button>
+
+<!-- ícones reutilizáveis -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6.5" y="5" width="4" height="14" rx="1.2" fill="currentColor" stroke="none"/><rect x="13.5" y="5" width="4" height="14" rx="1.2" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-prev" viewBox="0 0 24 24"><path d="M18 6v12l-9-6z" fill="currentColor" stroke="none"/><rect x="5" y="6" width="2.4" height="12" rx="1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="M6 6v12l9-6z" fill="currentColor" stroke="none"/><rect x="16.6" y="6" width="2.4" height="12" rx="1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4m0 0L7 9m5-5 5 5M4 20h16"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4-4"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.5 6 .8-4.4 4.1 1.1 6L12 17l-5.3 2.9 1.1-6L3.4 9.8l6-.8z"/></symbol>
+  <symbol id="i-volume" viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/><path d="M15.5 9a4 4 0 0 1 0 6m2.5-8.5a7.5 7.5 0 0 1 0 11"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 12h10l1-12M9 7V4h6v3"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+</svg>
+
+<a class="skip" href="#universo">Pular para as músicas</a>
+<canvas id="cosmos" aria-hidden="true"></canvas>
+
+<header class="nav" id="nav">
+  <a class="brand" href="#top" aria-label="Music Space, início">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+      <defs><radialGradient id="bm" cx="32%" cy="28%" r="80%"><stop offset="0" stop-color="#e0d5ff"/><stop offset=".5" stop-color="#a58cf2"/><stop offset="1" stop-color="#3a2c80"/></radialGradient></defs>
+      <ellipse cx="16" cy="16" rx="14.5" ry="4.6" fill="none" stroke="#cdbfff" stroke-opacity=".55" stroke-width="1.2" transform="rotate(-18 16 16)"/>
+      <circle cx="16" cy="16" r="8.5" fill="url(#bm)"/>
+      <path d="M2.2 18.6A14.5 4.6 0 0 0 29.8 13.4" fill="none" stroke="#cdbfff" stroke-width="1.4" transform="rotate(-18 16 16)" clip-path="inset(50% 0 0 0)"/>
+    </svg>
+    <span>Music Space</span>
+  </a>
+  <nav class="nav-links" aria-label="Seções">
+    <a href="#universo">Meu universo</a>
+    <a href="#sistemas">Sistemas</a>
+    <a href="#como-funciona">Como funciona</a>
+  </nav>
+  <button class="btn btn-ghost btn-sm" type="button" data-open-add>
+    <svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>Adicionar música
+  </button>
+  <i class="nav-progress" id="navProgress" aria-hidden="true"></i>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero" aria-labelledby="heroTitle">
+    <canvas id="galaxy" aria-hidden="true"></canvas>
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <p class="hero-badge"><i></i>Aperte o play. Explore seu universo.</p>
+        <h1 class="hero-title" id="heroTitle">
+          <span class="line"><span>Seu som.</span></span>
+          <span class="line"><span>Seu espaço.</span></span>
+          <span class="line serif"><span>Sem limites para sentir.</span></span>
+        </h1>
+        <div class="hero-support">
+          <p class="hero-lead">Traga suas músicas favoritas.<br>Dê o play e deixe o mundo lá fora.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" type="button" data-open-add>
+              <svg class="i" aria-hidden="true"><use href="#i-upload"/></svg>Trazer minhas músicas
+            </button>
+            <a class="btn btn-text" href="#universo">Ver meu universo</a>
+          </div>
+          <p class="hero-fine">Sem anúncios. Sem mensalidades. Só você e a música.</p>
+        </div>
       </div>
-    </aside>
-    <main id="main">
-      <header class="topbar">
-        <div class="breadcrumb"><span>Seu universo musical</span><span class="breadcrumb-dot">/</span><strong id="breadcrumb">Início</strong></div>
-        <div class="topbar-right"><span class="offline-badge" id="offline-status"><span class="status-dot"></span> Feito para ouvir offline</span><button class="icon-button" id="galaxy-toggle" aria-pressed="false" aria-label="Ver biblioteca como galáxia" title="Galáxia">◍</button><button class="icon-button motion-toggle" id="motion-toggle" aria-label="Pausar animações" aria-pressed="false">✦</button></div>
-      </header>
-      <section class="galaxy" id="galaxy" hidden aria-label="Biblioteca em formato de galáxia. A lista completa continua disponível ao desativar esta visão."><canvas></canvas><div class="galaxy-hud"><strong>Sua galáxia</strong><span class="galaxy-count"></span><small>Arraste para girar · clique em um planeta para tocar · estrelas brilhantes são favoritas</small></div><div class="galaxy-tip" hidden></div></section>
-      <div class="page-content">
-        <section class="welcome" id="welcome">
-          <div><div class="eyebrow"><span class="tiny-sun">✳</span> SUA MÚSICA EM OUTRA ÓRBITA</div><h1>Encontre sua frequência<span>.</span></h1><p>Um universo de músicas. No seu próprio ritmo.</p></div>
-          <button class="button button-primary" data-action="import"><i data-icon="plus"></i> Importar músicas</button>
-        </section>
-        <section class="hero" id="hero">
-          <div class="hero-copy"><span class="pill"><span class="status-dot"></span> APERTE O PLAY. EXPLORE SEU UNIVERSO.</span><h2>Seu som.<br>Seu espaço.<br><em>Sem limites para sentir.</em></h2><p>Traga suas músicas favoritas.<br>Dê o play e deixe o mundo lá fora.</p><button class="button button-light" data-action="import"><i data-icon="upload"></i> Trazer minhas músicas <i data-icon="arrow-right"></i></button><span class="hero-footnote">Sem anúncios. Sem mensalidades. Só você e a música.</span></div>
-          <div class="space-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="space-planet"><div class="planet-core">♪</div></div><span class="satellite"></span><span class="space-coordinate">EST. 2026 / MUSIC SPACE</span></div>
-        </section>
-        <section class="library-section" aria-labelledby="library-title">
-          <div class="section-heading"><div><div class="eyebrow" id="section-eyebrow">FEITA POR VOCÊ</div><h2 id="library-title">Sua biblioteca<span id="track-count"></span></h2></div><div class="view-actions"><button class="icon-button" data-action="import" aria-label="Adicionar músicas" title="Adicionar músicas"><i data-icon="plus"></i></button><button class="icon-button" id="layout-toggle" data-action="layout" aria-label="Alternar visualização" title="Alternar visualização"><i data-icon="grid"></i></button></div></div>
-          <div class="library-toolbar"><div class="tabs" id="library-tabs" role="tablist" aria-label="Visualização da biblioteca"></div><div class="filter-tools"><label class="search"><i data-icon="search"></i><input id="search" type="search" placeholder="Buscar na sua biblioteca" aria-label="Buscar na sua biblioteca"><kbd>/</kbd></label><select id="sort" aria-label="Ordenar músicas"><option value="recent">Recentes</option><option value="title">Nome A–Z</option><option value="artist">Artista A–Z</option></select></div></div>
-          <div id="collection-header"></div><div id="library" aria-live="polite"></div>
-        </section>
-        <footer class="page-footer"><span><img src="./assets/mark.svg" alt=""> Music Space · Seu universo começa com um play.</span><span>Feito para ser seu <span class="footer-star">✳</span></span></footer>
+
+      <div class="hero-stage">
+        <div class="planet-wrap" id="anchor">
+          <div class="float">
+            <div class="ringbox back">
+              <svg viewBox="0 0 420 420" aria-hidden="true"><ellipse cx="210" cy="210" rx="200" ry="74"/></svg>
+              <span class="moon" id="moonBack"></span>
+            </div>
+            <button class="planet" id="heroPlanet" type="button" aria-label="Ouvir uma faixa demo">
+              <svg class="ic-note" viewBox="0 0 64 64" aria-hidden="true">
+                <ellipse cx="22" cy="48" rx="10" ry="8" transform="rotate(-20 22 48)"/>
+                <rect x="29" y="10" width="5" height="38" rx="2.5"/>
+                <path d="M32 10c4 8 16 8 16 22 0-6-6-9-16-8z"/>
+              </svg>
+              <svg class="ic-pause" viewBox="0 0 64 64" aria-hidden="true">
+                <rect x="17" y="14" width="10" height="36" rx="3"/><rect x="37" y="14" width="10" height="36" rx="3"/>
+              </svg>
+            </button>
+            <div class="ringbox front">
+              <svg viewBox="0 0 420 420" aria-hidden="true"><path d="M10 210A200 74 0 0 0 410 210"/></svg>
+              <span class="moon" id="moonFront"></span>
+            </div>
+          </div>
+        </div>
+        <p class="stage-hint" id="stageHint">Toque no planeta e ouça uma faixa.</p>
       </div>
-    </main>
-  </div>
-  <nav class="mobile-nav" aria-label="Navegação mobile"><button data-view="home"><i data-icon="home"></i><span>Início</span></button><button data-view="songs"><i data-icon="library"></i><span>Biblioteca</span></button><button data-view="favorites"><i data-icon="heart"></i><span>Favoritas</span></button><button data-action="mobile-playlists"><i data-icon="playlist"></i><span>Playlists</span></button></nav>
-  <section class="player" id="player" aria-label="Player de música">
-    <button class="player-collapse icon-button" data-action="expand" aria-label="Minimizar player"><i data-icon="chevron-down"></i></button>
-    <div class="now-playing"><button class="now-cover" data-action="expand" aria-label="Expandir player"><span id="now-art"><i data-icon="music"></i></span></button><div class="now-info"><strong id="now-title">Seu próximo som favorito</strong><span id="now-artist">Começa com um play</span></div><button class="icon-button" id="now-favorite" data-action="favorite-current" aria-label="Favoritar música" disabled><i data-icon="heart"></i></button></div>
-    <div class="playback"><div class="playback-buttons"><button class="icon-button" id="shuffle" data-action="shuffle" aria-label="Reprodução aleatória" aria-pressed="false"><i data-icon="shuffle"></i></button><button class="icon-button" id="previous" data-action="previous" aria-label="Música anterior" disabled><i data-icon="skip-back"></i></button><button class="play-button" id="play" data-action="play" aria-label="Reproduzir" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path class="play-morph" d="M7 4 L19 12 L7 20 Z"/></svg></button><button class="icon-button" id="next" data-action="next" aria-label="Próxima música" disabled><i data-icon="skip-forward"></i></button><button class="icon-button" id="repeat" data-action="repeat" aria-label="Repetição desativada" aria-pressed="false"><i data-icon="repeat"></i><span id="repeat-one" hidden>1</span></button></div><div class="seek-row"><span id="elapsed">0:00</span><input id="seek" type="range" min="0" max="100" value="0" step="0.1" aria-label="Posição da reprodução" disabled><span id="duration">0:00</span></div></div>
-    <div class="player-extras"><button class="icon-button" data-action="queue" aria-label="Ver fila de reprodução" title="Fila de reprodução"><i data-icon="queue"></i></button><span class="player-divider"></span><button class="icon-button" id="mute" data-action="mute" aria-label="Silenciar"><i data-icon="volume"></i></button><input type="range" id="volume" min="0" max="1" step="0.01" value="0.75" aria-label="Volume"><button class="icon-button expand-button" data-action="expand" aria-label="Expandir player"><i data-icon="expand"></i></button></div>
+    </div>
   </section>
-  <input id="file-input" type="file" accept=".mp3,.flac,.wav,.m4a,.aac,.ogg,.oga,.opus,.wma,.aiff,.aif,.mp4,.m4v,.webm,.mkv,.mov,.avi,.wmv,.ogv,.3gp" multiple hidden>
-  <div class="drop-overlay" id="drop-overlay" hidden><i data-icon="upload"></i><h2>Pode soltar. Este espaço é seu.</h2><p>Adicione suas músicas à biblioteca.</p></div>
-  <dialog id="dialog"><div class="dialog-top"><h2 id="dialog-title"></h2><button class="icon-button" data-action="close-dialog" aria-label="Fechar"><i data-icon="close"></i></button></div><div id="dialog-content"></div></dialog>
-  <div id="toast" role="status" aria-live="polite"></div>
-  <script type="module" src="./src/motion.js"></script>
-  <audio id="audio" preload="metadata"></audio>
-  <script type="module" src="./src/app.js"></script>
+
+  <!-- ============ BIBLIOTECA ============ -->
+  <section class="section universe" id="universo" aria-labelledby="uniTitle">
+    <div class="wrap">
+      <header class="section-head">
+        <h2 id="uniTitle">Seu universo</h2>
+        <p>Cada música que você guarda vira um planeta, e a órbita é o humor. Passe o mouse para ver, clique para ouvir.</p>
+      </header>
+
+      <div class="toolbar">
+        <label class="search">
+          <svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
+          <input id="q" type="search" placeholder="Buscar música, artista ou gênero" autocomplete="off" aria-label="Buscar música, artista ou gênero">
+        </label>
+        <div class="chips" id="chips" role="group" aria-label="Filtrar por humor"></div>
+        <div class="seg" role="group" aria-label="Modo de visualização">
+          <button class="seg-btn" type="button" data-view="orbit" aria-pressed="true">Órbita</button>
+          <button class="seg-btn" type="button" data-view="list" aria-pressed="false">Lista</button>
+        </div>
+      </div>
+
+      <div class="stagebox" id="viewOrbit">
+        <canvas id="orbit" tabindex="0" role="application" aria-label="Mapa orbital das suas músicas. Use as setas para escolher uma música e Enter para ouvir."></canvas>
+        <div class="tip" id="tip" hidden></div>
+        <div class="empty" id="empty" hidden>
+          <h3>Seu universo está vazio</h3>
+          <p>Adicione a primeira música e ela vira um planeta na órbita do humor que você escolher.</p>
+          <button class="btn btn-primary" type="button" data-open-add>Adicionar música</button>
+        </div>
+        <aside class="panel" id="panel" hidden aria-label="Detalhes da música"></aside>
+      </div>
+
+      <div class="listbox" id="viewList" hidden>
+        <ol class="rows" id="rows"></ol>
+        <div class="empty-list" id="emptyList" hidden>
+          <p>Nenhuma música encontrada. Limpe a busca ou escolha outro humor.</p>
+        </div>
+      </div>
+
+      <p class="count" id="count" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- ============ SISTEMAS ============ -->
+  <section class="section systems" id="sistemas" aria-labelledby="sysTitle">
+    <div class="wrap">
+      <header class="section-head">
+        <h2 id="sysTitle">Cinco sistemas, cinco humores</h2>
+        <p>Ao guardar uma música, você escolhe o humor e ela entra na órbita certa. Toque em um sistema para ver só aquelas músicas.</p>
+      </header>
+      <ul class="sys-row" id="systems"></ul>
+    </div>
+  </section>
+
+  <!-- ============ COMO FUNCIONA ============ -->
+  <section class="section how" id="como-funciona" aria-labelledby="howTitle">
+    <div class="wrap">
+      <header class="section-head">
+        <h2 id="howTitle">Do link ao planeta em três passos</h2>
+        <p>Nada de conta, nada de cadastro. Suas músicas ficam salvas neste navegador.</p>
+      </header>
+
+      <ol class="steps" id="steps">
+        <li class="step">
+          <div class="step-art" aria-hidden="true">
+            <svg viewBox="0 0 320 190">
+              <defs>
+                <radialGradient id="sg1" cx="32%" cy="28%" r="80%"><stop offset="0" stop-color="#e0d5ff"/><stop offset=".5" stop-color="#a58cf2"/><stop offset="1" stop-color="#2c2262"/></radialGradient>
+                <linearGradient id="tail" x1="0" x2="1"><stop offset="0" stop-color="#ffb36b" stop-opacity="0"/><stop offset="1" stop-color="#fff3df"/></linearGradient>
+              </defs>
+              <circle cx="214" cy="104" r="40" fill="url(#sg1)" class="a1-planet"/>
+              <g class="a1-comet"><rect x="40" y="46" width="96" height="3" rx="1.5" fill="url(#tail)" transform="rotate(24 40 46)"/><circle cx="131" cy="86" r="4.5" fill="#fff3df"/></g>
+              <circle cx="214" cy="104" r="40" fill="none" stroke="#b9a4ff" stroke-width="1.5" class="a1-pulse"/>
+            </svg>
+          </div>
+          <h3><b>1</b>Traga a música</h3>
+          <p>Envie um arquivo de áudio ou cole o link de onde ela está, como YouTube ou Spotify.</p>
+        </li>
+        <li class="step">
+          <div class="step-art" aria-hidden="true">
+            <svg viewBox="0 0 320 190">
+              <circle cx="160" cy="95" r="9" fill="#ffb36b"/>
+              <circle cx="160" cy="95" r="26" fill="none" stroke="#b9a4ff" stroke-opacity=".28"/>
+              <circle cx="160" cy="95" r="46" fill="none" stroke="#b9a4ff" stroke-opacity=".28"/>
+              <circle cx="160" cy="95" r="68" fill="none" stroke="#b9a4ff" stroke-opacity=".28"/>
+              <g class="a2-orbit o1"><circle cx="186" cy="95" r="5" fill="#ffb36b"/></g>
+              <g class="a2-orbit o2"><circle cx="206" cy="95" r="7" fill="#7fd4ff"/></g>
+              <g class="a2-orbit o3"><circle cx="228" cy="95" r="9" fill="#b9a4ff"/></g>
+            </svg>
+          </div>
+          <h3><b>2</b>Escolha a órbita</h3>
+          <p>Marque o humor. A música entra no sistema certo e ganha um planeta só dela.</p>
+        </li>
+        <li class="step">
+          <div class="step-art" aria-hidden="true">
+            <svg viewBox="0 0 320 190">
+              <circle cx="160" cy="95" r="34" fill="none" stroke="#b9a4ff" stroke-width="1.5" class="a3-ring r1"/>
+              <circle cx="160" cy="95" r="34" fill="none" stroke="#b9a4ff" stroke-width="1.5" class="a3-ring r2"/>
+              <circle cx="160" cy="95" r="34" fill="none" stroke="#b9a4ff" stroke-width="1.5" class="a3-ring r3"/>
+              <circle cx="160" cy="95" r="34" fill="url(#sg1)"/>
+              <path d="M152 80v30l26-15z" fill="#e9e2ff"/>
+            </svg>
+          </div>
+          <h3><b>3</b>Dê o play</h3>
+          <p>Toque no planeta. O player fica na tela enquanto você navega pelo resto do site.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ CTA FINAL ============ -->
+  <section class="final" aria-labelledby="finalTitle">
+    <canvas id="warp" aria-hidden="true"></canvas>
+    <div class="final-in">
+      <h2 id="finalTitle">Seu primeiro planeta leva um minuto.</h2>
+      <p>Escolha uma música, marque o humor e veja ela entrar em órbita.</p>
+      <button class="btn btn-primary btn-lg" type="button" id="finalBtn" data-open-add>Adicionar música</button>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Music Space, 2026</span>
+  <span>Suas músicas ficam salvas só neste navegador.</span>
+</footer>
+
+<!-- ============ PLAYER ============ -->
+<aside class="dock" id="dock" hidden aria-label="Player de música">
+  <div class="dock-cover">
+    <canvas id="dockViz" width="144" height="144" aria-hidden="true"></canvas>
+    <canvas id="dockPlanet" width="88" height="88" aria-hidden="true"></canvas>
+  </div>
+  <div class="dock-meta">
+    <strong id="dockTitle">—</strong>
+    <span id="dockArtist"></span>
+  </div>
+  <div class="dock-ctrl">
+    <button class="icon-btn" type="button" id="btnPrev" aria-label="Música anterior"><svg class="i"><use href="#i-prev"/></svg></button>
+    <button class="play" type="button" id="btnPlay" aria-label="Tocar"><svg class="i"><use href="#i-play"/></svg></button>
+    <button class="icon-btn" type="button" id="btnNext" aria-label="Próxima música"><svg class="i"><use href="#i-next"/></svg></button>
+  </div>
+  <div class="dock-time">
+    <span id="tCur">0:00</span>
+    <input id="seek" type="range" min="0" max="1000" value="0" aria-label="Posição da música">
+    <span id="tDur">0:00</span>
+  </div>
+  <label class="dock-vol">
+    <svg class="i" aria-hidden="true"><use href="#i-volume"/></svg>
+    <input id="vol" type="range" min="0" max="100" value="80" aria-label="Volume">
+  </label>
+</aside>
+
+<!-- ============ ADICIONAR MÚSICA ============ -->
+<div class="modal" id="addModal" role="dialog" aria-modal="true" aria-labelledby="addTitle" hidden>
+  <div class="modal-backdrop" data-close></div>
+  <form class="modal-card" id="addForm" novalidate>
+    <div class="modal-preview">
+      <canvas id="previewPlanet" width="320" height="320" aria-hidden="true"></canvas>
+      <button type="button" class="btn btn-text btn-sm" id="reroll">Sortear outro planeta</button>
+      <p class="preview-note">O planeta muda conforme o nome e o humor.</p>
+    </div>
+    <div class="modal-fields">
+      <button type="button" class="icon-btn modal-x" data-close aria-label="Fechar"><svg class="i"><use href="#i-close"/></svg></button>
+      <h2 id="addTitle">Adicionar música</h2>
+
+      <label class="field">Nome da música
+        <input name="title" maxlength="80" autocomplete="off" required>
+        <span class="err" data-for="title" role="alert"></span>
+      </label>
+      <label class="field">Artista
+        <input name="artist" maxlength="60" autocomplete="off">
+      </label>
+
+      <fieldset class="mood-pick">
+        <legend>Humor</legend>
+        <div id="moodPick"></div>
+      </fieldset>
+
+      <label class="field">Gênero
+        <input name="genre" maxlength="30" list="genres" autocomplete="off">
+        <datalist id="genres">
+          <option value="Ambient"><option value="Lo-fi"><option value="Eletrônica"><option value="Rock"><option value="Pop"><option value="MPB"><option value="Sertanejo"><option value="Funk"><option value="Rap"><option value="Jazz"><option value="Clássica"><option value="Trilha"><option value="Indie"><option value="House"><option value="Synthwave">
+        </datalist>
+      </label>
+      <label class="field">Link (opcional)
+        <input name="link" type="url" inputmode="url" placeholder="https://" autocomplete="off">
+        <span class="err" data-for="link" role="alert"></span>
+      </label>
+
+      <div class="drop" id="drop">
+        <input type="file" id="file" accept="audio/*" hidden>
+        <button type="button" class="btn btn-ghost btn-sm" id="pick"><svg class="i" aria-hidden="true"><use href="#i-upload"/></svg>Escolher arquivo de áudio</button>
+        <span id="fileName">Ou arraste o arquivo para cá. Ele fica só neste navegador.</span>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-text" data-close>Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar música</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+<script src="js/core.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/cosmos.js"></script>
+<script src="js/orbit.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
