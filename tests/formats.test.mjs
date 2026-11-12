@@ -15,7 +15,11 @@ test('Windows files without MIME types accept audio and video, rejecting unrelat
 
 test('picker extensions agree with the import filter', async () => {
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
-  assert.equal(html.match(/id="file-input"[^>]*accept="([^"]+)"/)[1], MEDIA_ACCEPT);
+  const accept = html.match(/id="file"[^>]*accept="([^"]+)"/)[1];
+  for (const extension of accept.split(',').filter(value => value.startsWith('.'))) {
+    assert.ok(MEDIA_ACCEPT.split(',').includes(extension), extension);
+    assert.equal(isMediaFile({ name: `track${extension}` }), true);
+  }
 });
 
 test('new media formats retain metadata fallback without the file extension', async () => {

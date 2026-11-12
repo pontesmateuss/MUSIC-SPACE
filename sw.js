@@ -1,5 +1,5 @@
-const CACHE = 'music-space-shell-v7';
-const FILES = ['./','./index.html','./src/styles.css','./src/space.css','./src/app.js','./src/galaxy.js','./src/motion.js','./src/icons.js','./src/storage.js','./src/metadata.js','./src/formats.js','./src/demo.js','./manifest.webmanifest','./assets/mark.svg','./assets/icon.svg','./assets/icon-192.png','./assets/icon-512.png'];
+const CACHE = 'music-space-shell-v8';
+const FILES = ['./','./index.html','./css/style.css','./js/core.js','./js/audio.js','./js/cosmos.js','./js/orbit.js','./js/app.js','./js/navigation.js','./manifest.webmanifest'];
 self.addEventListener('install', event => { event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', event => { event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => (key.startsWith('nest-shell-') || key.startsWith('music-space-shell-')) && key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', event => {

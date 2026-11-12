@@ -35,3 +35,16 @@ os dois só neste navegador. Para ligar a um backend depois, troque as funções
 ## Acessibilidade
 Navegação por teclado (no mapa: setas e Enter), foco visível, `prefers-reduced-motion`
 respeitado, e a visão em Lista como alternativa ao mapa.
+
+## Navegação reorganizada
+A inicial (`#top`) contém somente o hero e o convite final, com os efeitos originais.
+Músicas, Playlists, Álbuns e Artistas ficam no header. Em Explorar ficam Meu universo,
+Favoritas, Humores e Como funciona. A troca de área não reinicia o player.
+Playlists próprias são salvas em `musicspace.playlists.v1`; as seleções por humor
+acompanham a biblioteca. Álbuns usam o campo opcional do formulário; faixas antigas
+sem esse dado aparecem em “Sem álbum”.
+
+`js/navigation.js` controla as áreas e coleções. `npm run check`, `npm test` e
+`npm run build` validam e geram `dist/`, incluindo `css/` e `js/`.
+`src/` e os scripts antigos da raiz foram preservados; a interface atual carrega
+os scripts de `js/` e a folha de estilos de `css/`.

@@ -43,10 +43,16 @@
     </svg>
     <span>Music Space</span>
   </a>
-  <nav class="nav-links" aria-label="Seções">
-    <a href="#universo">Meu universo</a>
-    <a href="#sistemas">Sistemas</a>
-    <a href="#como-funciona">Como funciona</a>
+  <nav class="nav-links" aria-label="Biblioteca musical">
+    <a href="#top">Início</a>
+    <a href="#musicas">Músicas</a>
+    <a href="#playlists">Playlists</a>
+    <a href="#albuns">Álbuns</a>
+    <a href="#artistas">Artistas</a>
+    <details class="nav-more"><summary>Explorar</summary><div>
+      <a href="#universo">Meu universo</a><a href="#favoritas">Favoritas</a>
+      <a href="#sistemas">Humores</a><a href="#como-funciona">Como funciona</a>
+    </div></details>
   </nav>
   <button class="btn btn-ghost btn-sm" type="button" data-open-add>
     <svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>Adicionar música
@@ -57,7 +63,7 @@
 <main id="top">
 
   <!-- ============ HERO ============ -->
-  <section class="hero" id="hero" aria-labelledby="heroTitle">
+  <section class="hero" id="hero" data-page="home" aria-labelledby="heroTitle">
     <canvas id="galaxy" aria-hidden="true"></canvas>
     <div class="hero-grid">
       <div class="hero-copy">
@@ -108,7 +114,7 @@
   </section>
 
   <!-- ============ BIBLIOTECA ============ -->
-  <section class="section universe" id="universo" aria-labelledby="uniTitle">
+  <section class="section universe" id="universo" data-page="universo" hidden aria-labelledby="uniTitle">
     <div class="wrap">
       <header class="section-head">
         <h2 id="uniTitle">Seu universo</h2>
@@ -149,8 +155,22 @@
     </div>
   </section>
 
+  <section class="section collections" id="colecoes" data-page="collections" hidden aria-labelledby="collectionsTitle">
+    <div class="wrap">
+      <header class="section-head"><p class="eyebrow">SUA BIBLIOTECA MUSICAL</p><h2 id="collectionsTitle">Playlists</h2><p id="collectionsDescription"></p></header>
+      <div id="collectionCards" class="collection-grid"></div>
+      <form id="playlistForm" class="playlist-form" hidden>
+        <h3>Criar uma playlist</h3>
+        <label class="field">Nome da playlist<input name="playlistName" maxlength="60" required placeholder="Uma trilha para cada momento"></label>
+        <fieldset><legend>Escolha as músicas</legend><div id="playlistSongs" class="playlist-songs"></div></fieldset>
+        <button class="btn btn-primary" type="submit">Guardar playlist</button>
+        <p id="playlistStatus" role="status"></p>
+      </form>
+    </div>
+  </section>
+
   <!-- ============ SISTEMAS ============ -->
-  <section class="section systems" id="sistemas" aria-labelledby="sysTitle">
+  <section class="section systems" id="sistemas" data-page="sistemas" hidden aria-labelledby="sysTitle">
     <div class="wrap">
       <header class="section-head">
         <h2 id="sysTitle">Cinco sistemas, cinco humores</h2>
@@ -161,7 +181,7 @@
   </section>
 
   <!-- ============ COMO FUNCIONA ============ -->
-  <section class="section how" id="como-funciona" aria-labelledby="howTitle">
+  <section class="section how" id="como-funciona" data-page="como-funciona" hidden aria-labelledby="howTitle">
     <div class="wrap">
       <header class="section-head">
         <h2 id="howTitle">Do link ao planeta em três passos</h2>
@@ -217,7 +237,7 @@
   </section>
 
   <!-- ============ CTA FINAL ============ -->
-  <section class="final" aria-labelledby="finalTitle">
+  <section class="final" data-page="home" aria-labelledby="finalTitle">
     <canvas id="warp" aria-hidden="true"></canvas>
     <div class="final-in">
       <h2 id="finalTitle">Seu primeiro planeta leva um minuto.</h2>
@@ -227,7 +247,7 @@
   </section>
 </main>
 
-<footer class="foot">
+<footer class="foot" data-secondary hidden>
   <span>Music Space, 2026</span>
   <span>Suas músicas ficam salvas só neste navegador.</span>
 </footer>
@@ -284,6 +304,9 @@
         <div id="moodPick"></div>
       </fieldset>
 
+      <label class="field">Álbum (opcional)
+        <input name="album" maxlength="80" autocomplete="off" placeholder="Nome do álbum">
+      </label>
       <label class="field">Gênero
         <input name="genre" maxlength="30" list="genres" autocomplete="off">
         <datalist id="genres">
@@ -316,5 +339,6 @@
 <script src="js/cosmos.js"></script>
 <script src="js/orbit.js"></script>
 <script src="js/app.js"></script>
+<script src="js/navigation.js"></script>
 </body>
 </html>

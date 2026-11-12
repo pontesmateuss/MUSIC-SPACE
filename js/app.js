@@ -12,7 +12,7 @@
 
   MS.store.load();
 
-  const state = { mood: null, q: '', view: 'orbit', sel: null };
+  const state = { mood: null, q: '', view: 'orbit', sel: null, collection: null };
   const norm = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
   const safeUrl = (u) => /^https?:\/\//i.test(u || '');
 
@@ -26,6 +26,7 @@
 
   /* ---------- dados filtrados ---------- */
   function matches(s) {
+    if (state.collection && !state.collection.has(s.id)) return false;
     if (state.mood === 'fav' && !s.fav) return false;
     if (state.mood && state.mood !== 'fav' && s.mood !== state.mood) return false;
     if (state.q) {
@@ -35,7 +36,7 @@
     return true;
   }
   const visibleSongs = () => MS.store.all().filter(matches);
-  const filtering = () => !!(state.mood || state.q);
+  const filtering = () => !!(state.mood || state.q || state.collection);
   MS.audio.setQueue(visibleSongs);
 
   /* ---------- chips ---------- */
@@ -145,7 +146,7 @@
     const b = e.target.closest('.sys'); if (!b) return;
     state.mood = b.dataset.mood; state.q = ''; el.q.value = '';
     refresh();
-    $('#universo').scrollIntoView({ behavior: U.reduce ? 'auto' : 'smooth' });
+    MS.navigateLibrary({ mood: state.mood });
   });
 
   /* ---------- painel de detalhes ---------- */
@@ -248,6 +249,7 @@
     MS.orbit.setSongs(all);
     MS.orbit.setVisible(filtering() ? new Set(vis.map((s) => s.id)) : null);
     paintChips(); paintSystems(); renderRows();
+    MS.emit('library:change');
     if (state.sel) renderPanel();
     el.empty.hidden = all.length > 0;
     if (!all.length) el.count.textContent = '';
@@ -384,8 +386,8 @@
 
   function setFile(f) {
     if (!f) return;
-    if (!/^audio\//.test(f.type) && !/\.(mp3|wav|ogg|m4a|aac|flac|opus)$/i.test(f.name)) {
-      toast('Esse arquivo não é de áudio. Escolha um MP3, WAV, OGG ou M4A.'); return;
+    if (!/\.(mp3|wav|ogg|m4a|aac|flac|opus|mp4|m4v|webm|mov|mkv)$/i.test(f.name)) {
+      toast('Escolha um arquivo de áudio ou vídeo, como MP3, WAV, M4A ou MP4.'); return;
     }
     file = f; fileDur = 0;
     fileName.textContent = f.name;
@@ -457,7 +459,7 @@
     if (!ok) { (form.querySelector('[aria-invalid="true"]') || form.title).focus(); return; }
 
     const song = MS.store.add({
-      title, artist: form.artist.value.trim(), mood: form.mood.value, genre: form.genre.value.trim(),
+      title, album: form.album.value.trim(), artist: form.artist.value.trim(), mood: form.mood.value, genre: form.genre.value.trim(),
       link, seed: currentSeed(), hasFile: !!file, fileName: file ? file.name : '', dur: fileDur,
     });
     if (file) {
@@ -470,6 +472,7 @@
     closeModal();
     state.mood = null; state.q = ''; el.q.value = '';
     refresh();
+    MS.navigateLibrary({ orbit: true });
     const uni = $('#universo').getBoundingClientRect();
     const needScroll = uni.top > window.innerHeight * 0.6 || uni.bottom < window.innerHeight * 0.3;
     if (needScroll) $('#universo').scrollIntoView({ behavior: U.reduce ? 'auto' : 'smooth' });
@@ -494,6 +497,16 @@
     entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-seen'); stepIO.unobserve(e.target); } });
   }, { threshold: 0.45 });
   $$('.step').forEach((s) => (U.reduce ? s.classList.add('is-seen') : stepIO.observe(s)));
+
+  MS.library = {
+    open(options = {}) {
+      state.collection = options.ids ? new Set(options.ids) : null;
+      state.mood = options.mood || null;
+      state.q = ''; el.q.value = '';
+      closePanel();
+      setView(options.orbit ? 'orbit' : 'list');
+    },
+  };
 
   /* ---------- início ---------- */
   buildChips();

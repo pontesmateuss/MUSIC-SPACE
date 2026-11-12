@@ -1,5 +1,10 @@
 # Music Space
 
+> A interface atual usa `index.html`, `css/` e `js/`. Consulte [LEIA-ME.md](LEIA-ME.md)
+> para a navegação e a estrutura atuais. A documentação abaixo descreve também
+> recursos da implementação anterior em `src/`, preservada no repositório;
+> esses recursos não estão todos conectados à interface atual.
+
 Seu universo musical. Player local em português, com interface responsiva e instalação como **PWA no desktop, Android e iOS**. Sem login, assinaturas ou upload de áudio.
 
 ## Executar
