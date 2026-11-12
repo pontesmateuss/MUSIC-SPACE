@@ -19,7 +19,7 @@
     let W = 0, H = 0, dpr = 1, stars = [];
     let lastY = window.scrollY, vel = 0;
     const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
-    const TINTS = ['236,230,255', '255,214,170', '170,214,255', '210,190,255'];
+    const TINTS = ['244,241,234', '242,181,107', '112,183,217', '36,87,118'];
 
     function resize() {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -49,9 +49,9 @@
 
       /* nebulosa em três camadas (parallax lento com o scroll) */
       const neb = [
-        [W * 0.82 + mouse.x * -18, H * 0.18 - y * 0.05, W * 0.62, 'rgba(112,82,232,.17)'],
-        [W * 0.08 + mouse.x * -10, H * 0.78 - y * 0.03, W * 0.56, 'rgba(214,92,196,.075)'],
-        [W * 0.5, H * 0.5 - y * 0.015, W * 0.85, 'rgba(40,64,168,.085)'],
+        [W * 0.82 + mouse.x * -18, H * 0.18 - y * 0.05, W * 0.62, 'rgba(36,87,118,.17)'],
+        [W * 0.08 + mouse.x * -10, H * 0.78 - y * 0.03, W * 0.56, 'rgba(242,181,107,.075)'],
+        [W * 0.5, H * 0.5 - y * 0.015, W * 0.85, 'rgba(36,87,118,.085)'],
       ];
       for (const n of neb) {
         const g = ctx.createRadialGradient(n[0], n[1], 0, n[0], n[1], n[2]);
@@ -105,7 +105,7 @@
     const moonB = U.$('#moonBack');
     const moonF = U.$('#moonFront');
 
-    const COLORS = ['255,238,210', '236,214,255', '196,170,255', '150,160,255', '255,150,225'];
+    const COLORS = ['244,241,234', '112,183,217', '36,87,118', '112,183,217', '242,181,107'];
     const ALPHAS = [0.32, 0.58, 0.92];
 
     let W = 0, H = 0, dpr = 1, cx = 0, cy = 0, R = 0;
@@ -187,14 +187,14 @@
       ctx.save();
       ctx.translate(gx, gy); ctx.rotate(ang); ctx.scale(1, tilt * 1.15);
       let g = ctx.createRadialGradient(0, 0, 0, 0, 0, Re);
-      g.addColorStop(0, 'rgba(190,160,255,.30)');
-      g.addColorStop(0.35, 'rgba(120,90,230,.14)');
-      g.addColorStop(1, 'rgba(60,40,160,0)');
+      g.addColorStop(0, 'rgba(112,183,217,.30)');
+      g.addColorStop(0.35, 'rgba(36,87,118,.14)');
+      g.addColorStop(1, 'rgba(13,27,38,0)');
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, Re, 0, TAU); ctx.fill();
       const core = Re * (0.28 + bass * 0.12);
       g = ctx.createRadialGradient(0, 0, 0, 0, 0, core);
-      g.addColorStop(0, `rgba(255,236,205,${0.55 + bass * 0.35})`);
-      g.addColorStop(1, 'rgba(255,200,150,0)');
+      g.addColorStop(0, `rgba(244,241,234,${0.55 + bass * 0.35})`);
+      g.addColorStop(1, 'rgba(242,181,107,0)');
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, core, 0, TAU); ctx.fill();
       ctx.restore();
 
@@ -269,7 +269,7 @@
     function reset(s, initial) {
       s.x = U.rand(-1, 1); s.y = U.rand(-1, 1);
       s.z = initial ? U.rand(0.05, 1) : 1;
-      s.c = Math.random() < 0.25 ? '255,200,150' : '210,196,255';
+      s.c = Math.random() < 0.25 ? '242,181,107' : '210,196,255';
     }
     function resize() {
       const r = sec.getBoundingClientRect();

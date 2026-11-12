@@ -50,11 +50,11 @@
 
   /* ---------- humores (cada um é uma órbita) ---------- */
   MS.MOODS = [
-    { id: 'energia',   name: 'Energia',   hue: 28,  desc: 'Para treinar, correr e sair de casa.' },
-    { id: 'foco',      name: 'Foco',      hue: 205, desc: 'Para estudar, programar e não se perder.' },
-    { id: 'noturno',   name: 'Noturno',   hue: 262, desc: 'Para a madrugada e a luz baixa.' },
-    { id: 'nostalgia', name: 'Nostalgia', hue: 330, desc: 'Para lembrar de um lugar ou de alguém.' },
-    { id: 'calma',     name: 'Calma',     hue: 165, desc: 'Para respirar fundo e desacelerar.' },
+    { id: 'energia',   name: 'Energia',   hue: 33,  desc: 'Para treinar, correr e sair de casa.' },
+    { id: 'foco',      name: 'Foco',      hue: 199, desc: 'Para estudar, programar e não se perder.' },
+    { id: 'noturno',   name: 'Noturno',   hue: 203, desc: 'Para a madrugada e a luz baixa.' },
+    { id: 'nostalgia', name: 'Nostalgia', hue: 33, desc: 'Para lembrar de um lugar ou de alguém.' },
+    { id: 'calma',     name: 'Calma',     hue: 199, desc: 'Para respirar fundo e desacelerar.' },
   ];
   MS.mood = (id) => MS.MOODS.find((m) => m.id === id) || MS.MOODS[2];
   MS.moodIndex = (id) => Math.max(0, MS.MOODS.findIndex((m) => m.id === id));
@@ -68,8 +68,8 @@
     function describe(song) {
       const r = U.rng(song.seed || 1);
       const m = MS.mood(song.mood);
-      const hue = (m.hue + (r() - 0.5) * 44 + 360) % 360;
-      const hue2 = (hue + (r() - 0.5) * 70 + 360) % 360;
+      const hue = (m.hue + (r() - 0.5) * 10 + 360) % 360;
+      const hue2 = (hue + (r() - 0.5) * 12 + 360) % 360;
       const roll = r();
       const kind = roll < 0.4 ? 'gas' : roll < 0.62 ? 'rocky' : roll < 0.8 ? 'ice' : 'lava';
       return {
@@ -157,8 +157,8 @@
             c.stroke();
           }
         } else {
-          c.strokeStyle = 'rgba(255,150,70,.9)'; c.lineWidth = Math.max(1, R * 0.025);
-          c.shadowColor = 'rgba(255,120,40,.9)'; c.shadowBlur = R * 0.12;
+          c.strokeStyle = 'rgba(242,181,107,.9)'; c.lineWidth = Math.max(1, R * 0.025);
+          c.shadowColor = 'rgba(242,181,107,.9)'; c.shadowBlur = R * 0.12;
           for (let i = 0; i < 8; i++) {
             let x = cx + (r() - 0.5) * R * 1.6, y = cy + (r() - 0.5) * R * 1.6;
             c.beginPath(); c.moveTo(x, y);
@@ -171,10 +171,10 @@
 
       /* luz e terminador */
       g = c.createRadialGradient(cx - R * 0.38, cy - R * 0.42, R * 0.05, cx - R * 0.38, cy - R * 0.42, R * 1.75);
-      g.addColorStop(0, 'rgba(255,255,255,.34)');
-      g.addColorStop(0.28, 'rgba(255,255,255,0)');
-      g.addColorStop(0.62, 'rgba(6,5,22,.28)');
-      g.addColorStop(1, 'rgba(6,5,22,.9)');
+      g.addColorStop(0, 'rgba(244,241,234,.34)');
+      g.addColorStop(0.28, 'rgba(244,241,234,0)');
+      g.addColorStop(0.62, 'rgba(5,11,16,.28)');
+      g.addColorStop(1, 'rgba(5,11,16,.9)');
       c.fillStyle = g; c.fillRect(cx - R, cy - R, R * 2, R * 2);
       c.restore();
 

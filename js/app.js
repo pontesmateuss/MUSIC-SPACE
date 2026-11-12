@@ -43,7 +43,7 @@
   function buildChips() {
     const items = [{ id: null, name: 'Todos' }].concat(MS.MOODS, [{ id: 'fav', name: 'Favoritas' }]);
     el.chips.innerHTML = items.map((m) => {
-      const c = m.hue != null ? `hsl(${m.hue} 85% 68%)` : 'var(--lav)';
+      const c = m.hue != null ? `hsl(${m.hue} 85% 68%)` : 'var(--accent)';
       const dot = m.id === 'fav' ? '<svg class="i" aria-hidden="true"><use href="#i-star"/></svg>' : m.hue != null ? '<i></i>' : '';
       return `<button class="chip" type="button" data-mood="${m.id || ''}" style="--c:${c}" aria-pressed="false">${dot}${m.name}</button>`;
     }).join('');
@@ -129,7 +129,7 @@
         ? `<circle cx="${40 + k * 55}" cy="${k === 1 ? 72 : 22}" r="${d[0]}" fill="${c}"/>`
         : `<circle r="${d[0]}" fill="${c}"><animateMotion dur="${8 + i * 0.7}s" begin="${d[1]}s" repeatCount="indefinite" path="${path}"/></circle>`).join('');
       return `<li class="sys-li"><button class="sys" type="button" data-mood="${m.id}" style="--c:${c}">
-        <svg viewBox="0 0 200 90" aria-hidden="true"><ellipse cx="100" cy="45" rx="90" ry="30" fill="none" stroke="${c}" stroke-opacity=".4"/><circle cx="100" cy="45" r="4" fill="#ffb36b"/>${dots}</svg>
+        <svg viewBox="0 0 200 90" aria-hidden="true"><ellipse cx="100" cy="45" rx="90" ry="30" fill="none" stroke="${c}" stroke-opacity=".4"/><circle cx="100" cy="45" r="4" fill="#F2B56B"/>${dots}</svg>
         <h3>${m.name}</h3><p>${m.desc}</p><span class="sys-count" data-count="${m.id}"></span>
       </button></li>`;
     }).join('');

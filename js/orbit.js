@@ -88,7 +88,7 @@
 
     if (s.fav && vis) {
       const g = ctx.createRadialGradient(p.x, p.y, D * 0.3, p.x, p.y, D * 1.25);
-      g.addColorStop(0, 'rgba(255,179,107,.38)'); g.addColorStop(1, 'rgba(255,179,107,0)');
+      g.addColorStop(0, 'rgba(242,181,107,.38)'); g.addColorStop(1, 'rgba(242,181,107,0)');
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, D * 1.25, 0, TAU); ctx.fill();
     }
     if (vis && MS.audio.isPlaying(s)) {
@@ -112,7 +112,7 @@
       ctx.restore();
     }
     if (vis && focusId === s.id) {
-      ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.lineWidth = 2;
+      ctx.strokeStyle = 'rgba(244,241,234,.85)'; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.arc(p.x, p.y, D / 2 + 5, 0, TAU); ctx.stroke();
     }
   }
@@ -136,10 +136,10 @@
         const tl = 150 * (1 - e * 0.3);
         const tx = hx - dx / len * tl, ty = hy - dy / len * tl;
         const g = ctx.createLinearGradient(hx, hy, tx, ty);
-        g.addColorStop(0, 'rgba(255,243,223,.95)'); g.addColorStop(1, 'rgba(255,179,107,0)');
+        g.addColorStop(0, 'rgba(244,241,234,.95)'); g.addColorStop(1, 'rgba(242,181,107,0)');
         ctx.strokeStyle = g; ctx.lineWidth = 3; ctx.lineCap = 'round';
         ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(tx, ty); ctx.stroke();
-        ctx.fillStyle = '#fff3df'; ctx.shadowColor = 'rgba(255,200,140,.95)'; ctx.shadowBlur = 16;
+        ctx.fillStyle = '#F4F1EA'; ctx.shadowColor = 'rgba(242,181,107,.95)'; ctx.shadowBlur = 16;
         ctx.beginPath(); ctx.arc(hx, hy, 4.5, 0, TAU); ctx.fill(); ctx.shadowBlur = 0;
       } else if (f.k === 'ring') {
         if (e >= 1) { fx.splice(i, 1); continue; }
@@ -147,17 +147,17 @@
         ctx.strokeStyle = `hsl(${f.h} 90% 78% / ${1 - e})`; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.arc(f.x, f.y, 10 + k * 60, 0, TAU); ctx.stroke();
         const g = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, 40);
-        g.addColorStop(0, `rgba(255,255,255,${0.7 * (1 - e)})`); g.addColorStop(1, 'rgba(255,255,255,0)');
+        g.addColorStop(0, `rgba(244,241,234,${0.7 * (1 - e)})`); g.addColorStop(1, 'rgba(244,241,234,0)');
         ctx.fillStyle = g; ctx.beginPath(); ctx.arc(f.x, f.y, 40, 0, TAU); ctx.fill();
       } else if (f.k === 'hole') {
         if (e >= 1) { fx.splice(i, 1); continue; }
         const a = Math.sin(Math.min(e, 1) * Math.PI), r = 8 + 20 * a;
         const g = ctx.createRadialGradient(geo.cx, geo.cy, 0, geo.cx, geo.cy, r * 2.2);
         g.addColorStop(0, `rgba(0,0,0,${0.95 * a})`); g.addColorStop(0.45, `rgba(0,0,0,${0.9 * a})`);
-        g.addColorStop(0.5, `rgba(185,164,255,${0.55 * a})`); g.addColorStop(1, 'rgba(185,164,255,0)');
+        g.addColorStop(0.5, `rgba(112,183,217,${0.55 * a})`); g.addColorStop(1, 'rgba(112,183,217,0)');
         ctx.fillStyle = g; ctx.beginPath(); ctx.arc(geo.cx, geo.cy, r * 2.2, 0, TAU); ctx.fill();
         ctx.save(); ctx.translate(geo.cx, geo.cy); ctx.rotate(e * 9);
-        ctx.strokeStyle = `rgba(214,196,255,${0.8 * a})`; ctx.lineWidth = 2;
+        ctx.strokeStyle = `rgba(112,183,217,${0.8 * a})`; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.arc(0, 0, r * 1.25, 0, 4.2); ctx.stroke(); ctx.restore();
       }
     }
@@ -220,7 +220,7 @@
     ctx.globalCompositeOperation = 'lighter';
     const sr = 46 + bass * 26;
     let g = ctx.createRadialGradient(geo.cx, geo.cy, 0, geo.cx, geo.cy, sr);
-    g.addColorStop(0, 'rgba(255,240,214,.95)'); g.addColorStop(0.18, 'rgba(255,190,120,.6)'); g.addColorStop(1, 'rgba(255,150,90,0)');
+    g.addColorStop(0, 'rgba(244,241,234,.95)'); g.addColorStop(0.18, 'rgba(242,181,107,.6)'); g.addColorStop(1, 'rgba(242,181,107,0)');
     ctx.fillStyle = g; ctx.beginPath(); ctx.arc(geo.cx, geo.cy, sr, 0, TAU); ctx.fill();
     ctx.globalCompositeOperation = 'source-over';
 
@@ -230,7 +230,7 @@
     const sp = selected && pos.find((p) => p.s.id === selected);
     if (sp && isVis(selected) && sp.sc > 0.5) {
       ctx.font = `italic 17px ${SERIF}`;
-      ctx.fillStyle = '#ece8ff';
+      ctx.fillStyle = '#F4F1EA';
       ctx.fillText(sp.s.title, sp.x, sp.y + sp.r + 28);
     }
 
