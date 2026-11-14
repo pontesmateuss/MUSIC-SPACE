@@ -1,6 +1,6 @@
 /* ==========================================================
    Music Space — orbit.js
-   mapa orbital: cada humor é uma órbita, cada música é um planeta.
+   mapa orbital: distribuição equilibrada entre órbitas, cada música é um planeta.
    hover, clique, teclado, cometa ao salvar, buraco negro ao remover.
    ========================================================== */
 (function () {
@@ -49,8 +49,7 @@
     const k = U.clamp(maxRx / 380, 0.75, 1.25);
     geo = { cx, cy, ratio, maxRx, rx: (i) => maxRx * (0.3 + 0.7 * i / 4) };
 
-    const groups = MS.MOODS.map(() => []);
-    songs.forEach((s) => groups[MS.moodIndex(s.mood)].push(s));
+    const groups = MS.libraryModel.distribute(songs, MS.MOODS.length);
 
     groups.forEach((g, i) => {
       const rx = geo.rx(i), ry = rx * ratio;
@@ -209,7 +208,7 @@
       ctx.lineWidth = 1;
       ctx.beginPath(); ctx.ellipse(geo.cx, geo.cy, rx, ry, 0, 0, TAU); ctx.stroke();
       ctx.fillStyle = `hsl(${m.hue} 85% 78% / ${on[i] ? 0.78 : 0.26})`;
-      ctx.fillText(m.name, geo.cx, geo.cy - ry - 8);
+      ctx.fillText('Órbita ' + (i + 1), geo.cx, geo.cy - ry - 8);
     });
 
     const back = pos.filter((p) => p.sn < 0).sort((a, b) => a.sn - b.sn);

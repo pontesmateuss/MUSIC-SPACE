@@ -7,7 +7,7 @@ Site e app web para guardar músicas, em HTML, CSS e JavaScript puros (sem build
 - publique a pasta no GitHub Pages (ou qualquer hospedagem estática).
 
 ## Estrutura
-- `index.html`: página inteira (hero, universo, sistemas, passos, final, player, modal)
+- `index.html`: página inteira (início, músicas, órbita, playlists, player e modais)
 - `css/style.css`: tokens de cor/tipografia e todos os estilos
 - `js/core.js`: humores, planetas procedurais e armazenamento
 - `js/audio.js`: player, faixas demo geradas em tempo real e analisador de áudio
@@ -17,7 +17,7 @@ Site e app web para guardar músicas, em HTML, CSS e JavaScript puros (sem build
 
 ## Onde mexer
 - Cores: variáveis em `:root` no topo de `css/style.css`.
-- Humores (órbitas): `MS.MOODS` em `js/core.js`.
+- Paletas dos planetas: `MS.MOODS` em `js/core.js`.
 - Músicas de exemplo: `DEMO` em `js/core.js` (apague para começar vazio).
 - Fontes: Bricolage Grotesque e Instrument Serif, carregadas do Google Fonts.
 
@@ -36,15 +36,30 @@ os dois só neste navegador. Para ligar a um backend depois, troque as funções
 Navegação por teclado (no mapa: setas e Enter), foco visível, `prefers-reduced-motion`
 respeitado, e a visão em Lista como alternativa ao mapa.
 
-## Navegação reorganizada
-A inicial (`#top`) contém somente o hero e o convite final, com os efeitos originais.
-Músicas, Playlists, Álbuns e Artistas ficam no header. Em Explorar ficam Meu universo,
-Favoritas, Humores e Como funciona. A troca de área não reinicia o player.
-Playlists próprias são salvas em `musicspace.playlists.v1`; as seleções por humor
-acompanham a biblioteca. Álbuns usam o campo opcional do formulário; faixas antigas
-sem esse dado aparecem em “Sem álbum”.
+## Navegação simplificada
+A inicial (`#top`) mantém o hero e o convite final. O header contém Baixar app à
+esquerda, Início, Músicas, Playlists e Adicionar Músicas. A Órbita é acessível pelo
+seletor Órbita/Lista em Músicas e pelo convite da inicial. Álbuns, Artistas,
+Favoritas, Humores e Como funciona não são mais áreas da interface.
 
-`js/navigation.js` controla as áreas e coleções. `npm run check`, `npm test` e
-`npm run build` validam e geram `dist/`, incluindo `css/` e `js/`.
+As playlists são criadas somente pelo usuário e continuam salvas na chave
+`musicspace.playlists.v1`, preservando as existentes. É possível criar uma playlist
+vazia, editar seu nome, buscar e adicionar faixas, remover faixas sem apagar os
+arquivos, mudar a ordem pelas setas e excluir a playlist. O botão + de cada música
+também permite escolher uma playlist ou criar uma nova. A fila respeita a ordem da
+playlist e continua ao navegar entre as áreas. Não há integração com Spotify.
+
+Os planetas são distribuídos equilibradamente pelas cinco órbitas, independentemente
+do humor das músicas. Coleções pequenas ocupam também os anéis externos.
+
+Baixar app abre a instalação nativa quando disponível ou exibe instruções para o
+navegador. O botão fica oculto no modo instalado e após uma instalação detectada
+neste navegador; navegadores não permitem detectar universalmente instalações
+feitas em outros navegadores ou dispositivos.
+
+`js/navigation.js` controla as áreas e playlists. `js/library-model.js` contém a
+distribuição orbital e operações de playlist. `npm run check`, `npm test` e
+`npm run build` validam e geram `dist/`. Publique essa pasta para atualizar site e
+PWA; as alterações locais não publicam automaticamente em uma hospedagem.
 `src/` e os scripts antigos da raiz foram preservados; a interface atual carrega
 os scripts de `js/` e a folha de estilos de `css/`.

@@ -17,18 +17,16 @@
   const safeUrl = (u) => /^https?:\/\//i.test(u || '');
 
   const el = {
-    chips: $('#chips'), q: $('#q'), rows: $('#rows'), count: $('#count'),
+    q: $('#q'), rows: $('#rows'), count: $('#count'),
     empty: $('#empty'), emptyList: $('#emptyList'), panel: $('#panel'),
     viewOrbit: $('#viewOrbit'), viewList: $('#viewList'),
-    systems: $('#systems'), dock: $('#dock'), toasts: $('#toasts'),
+    dock: $('#dock'), toasts: $('#toasts'),
     heroPlanet: $('#heroPlanet'), hint: $('#stageHint'),
   };
 
   /* ---------- dados filtrados ---------- */
   function matches(s) {
     if (state.collection && !state.collection.has(s.id)) return false;
-    if (state.mood === 'fav' && !s.fav) return false;
-    if (state.mood && state.mood !== 'fav' && s.mood !== state.mood) return false;
     if (state.q) {
       const hay = norm([s.title, s.artist, s.genre, MS.mood(s.mood).name].join(' '));
       if (!hay.includes(norm(state.q))) return false;
@@ -37,29 +35,8 @@
   }
   const visibleSongs = () => MS.store.all().filter(matches);
   const filtering = () => !!(state.mood || state.q || state.collection);
-  MS.audio.setQueue(visibleSongs);
+  MS.libraryQueue = visibleSongs;
 
-  /* ---------- chips ---------- */
-  function buildChips() {
-    const items = [{ id: null, name: 'Todos' }].concat(MS.MOODS, [{ id: 'fav', name: 'Favoritas' }]);
-    el.chips.innerHTML = items.map((m) => {
-      const c = m.hue != null ? `hsl(${m.hue} 85% 68%)` : 'var(--accent)';
-      const dot = m.id === 'fav' ? '<svg class="i" aria-hidden="true"><use href="#i-star"/></svg>' : m.hue != null ? '<i></i>' : '';
-      return `<button class="chip" type="button" data-mood="${m.id || ''}" style="--c:${c}" aria-pressed="false">${dot}${m.name}</button>`;
-    }).join('');
-  }
-  function paintChips() {
-    $$('.chip', el.chips).forEach((b) => {
-      const id = b.dataset.mood || null;
-      b.setAttribute('aria-pressed', String(id === state.mood));
-    });
-  }
-  el.chips.addEventListener('click', (e) => {
-    const b = e.target.closest('.chip'); if (!b) return;
-    const id = b.dataset.mood || null;
-    state.mood = state.mood === id ? null : id;
-    refresh();
-  });
   let qTimer = 0;
   el.q.addEventListener('input', () => {
     clearTimeout(qTimer);
@@ -67,7 +44,7 @@
   });
 
   /* ---------- modo de visualização ---------- */
-  $$('.seg-btn').forEach((b) => b.addEventListener('click', () => setView(b.dataset.view)));
+  $$('.seg-btn').forEach((b) => b.addEventListener('click', () => MS.navigateLibrary({ orbit: b.dataset.view === 'orbit' })));
   function setView(v) {
     state.view = v;
     $$('.seg-btn').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === v)));
@@ -97,7 +74,7 @@
       <div class="row-plays">${n} ${U.plural(n, 'vez', 'vezes')}</div>
       <div class="row-actions">
         ${play}${link}
-        <button class="icon-btn${s.fav ? ' is-on' : ''}" type="button" data-act="fav" aria-pressed="${!!s.fav}" aria-label="${s.fav ? 'Tirar dos favoritos' : 'Favoritar'} ${esc(s.title)}"><svg class="i"><use href="#i-star"/></svg></button>
+        <button class="icon-btn" type="button" data-act="playlist" aria-label="Adicionar ${esc(s.title)} à playlist"><svg class="i"><use href="#i-plus"/></svg></button>
         <button class="icon-btn" type="button" data-act="remove" aria-label="Remover ${esc(s.title)}"><svg class="i"><use href="#i-trash"/></svg></button>
       </div>
     </li>`;
@@ -116,37 +93,8 @@
     const b = e.target.closest('[data-act]'); if (!b) return;
     const row = b.closest('.row'); const s = MS.store.get(row.dataset.id); if (!s) return;
     if (b.dataset.act === 'play') MS.audio.toggle(s);
-    else if (b.dataset.act === 'fav') toggleFav(s);
+    else if (b.dataset.act === 'playlist') MS.playlists.pick(s.id);
     else if (b.dataset.act === 'remove') removeSong(s, row);
-  });
-
-  /* ---------- sistemas (humores) ---------- */
-  function buildSystems() {
-    el.systems.innerHTML = MS.MOODS.map((m, i) => {
-      const c = `hsl(${m.hue} 85% 68%)`;
-      const path = 'M10 45a90 30 0 1 0 180 0a90 30 0 1 0 -180 0';
-      const dots = [[4, 0], [6.5, -2.7], [5, -5.3]].map((d, k) => U.reduce
-        ? `<circle cx="${40 + k * 55}" cy="${k === 1 ? 72 : 22}" r="${d[0]}" fill="${c}"/>`
-        : `<circle r="${d[0]}" fill="${c}"><animateMotion dur="${8 + i * 0.7}s" begin="${d[1]}s" repeatCount="indefinite" path="${path}"/></circle>`).join('');
-      return `<li class="sys-li"><button class="sys" type="button" data-mood="${m.id}" style="--c:${c}">
-        <svg viewBox="0 0 200 90" aria-hidden="true"><ellipse cx="100" cy="45" rx="90" ry="30" fill="none" stroke="${c}" stroke-opacity=".4"/><circle cx="100" cy="45" r="4" fill="#F2B56B"/>${dots}</svg>
-        <h3>${m.name}</h3><p>${m.desc}</p><span class="sys-count" data-count="${m.id}"></span>
-      </button></li>`;
-    }).join('');
-  }
-  function paintSystems() {
-    const all = MS.store.all();
-    MS.MOODS.forEach((m) => {
-      const n = all.filter((s) => s.mood === m.id).length;
-      const c = $(`[data-count="${m.id}"]`, el.systems);
-      if (c) c.textContent = `${n} ${U.plural(n, 'música', 'músicas')}`;
-    });
-  }
-  el.systems.addEventListener('click', (e) => {
-    const b = e.target.closest('.sys'); if (!b) return;
-    state.mood = b.dataset.mood; state.q = ''; el.q.value = '';
-    refresh();
-    MS.navigateLibrary({ mood: state.mood });
   });
 
   /* ---------- painel de detalhes ---------- */
@@ -163,14 +111,14 @@
       <div class="tags">
         <span class="tag" style="--c:hsl(${m.hue} 85% 68%)"><i></i>${m.name}</span>
         ${s.genre ? `<span class="tag">${esc(s.genre)}</span>` : ''}
-        ${s.fav ? '<span class="tag">Favorita</span>' : ''}
+
       </div>
       <p class="stat">Ouvida ${n} ${U.plural(n, 'vez', 'vezes')}${s.dur ? `. Duração ${U.fmtTime(s.dur)}.` : '.'}</p>
       ${note}
       <div class="panel-actions">
         ${playable ? `<button class="btn btn-primary" type="button" data-act="play"><svg class="i"><use href="#i-${playing ? 'pause' : 'play'}"/></svg>${playing ? 'Pausar' : 'Ouvir'}</button>` : ''}
         <div class="row2">
-          <button class="btn btn-line${s.fav ? ' is-on' : ''}" type="button" data-act="fav" aria-pressed="${!!s.fav}"><svg class="i"><use href="#i-star"/></svg>${s.fav ? 'Favorita' : 'Favoritar'}</button>
+          <button class="btn btn-line" type="button" data-act="playlist">Adicionar à playlist</button>
           ${link ? `<a class="btn btn-line" href="${esc(s.link)}" target="_blank" rel="noopener noreferrer"><svg class="i"><use href="#i-link"/></svg>Abrir link</a>` : '<span></span>'}
         </div>
         <button class="danger" type="button" data-act="remove">Remover música</button>
@@ -207,7 +155,7 @@
     const s = state.sel && MS.store.get(state.sel);
     if (b.dataset.act === 'close') closePanel();
     else if (s && b.dataset.act === 'play') MS.audio.toggle(s);
-    else if (s && b.dataset.act === 'fav') toggleFav(s);
+    else if (s && b.dataset.act === 'playlist') MS.playlists.pick(s.id);
     else if (s && b.dataset.act === 'remove') removeSong(s);
   });
   MS.on('orbit:pick', (s) => {
@@ -219,10 +167,7 @@
   el.viewOrbit.addEventListener('keydown', (e) => { if (e.key === 'Escape' && state.sel) closePanel(); });
 
   /* ---------- ações ---------- */
-  function toggleFav(s) {
-    MS.store.update(s.id, { fav: !s.fav });
-    refresh();
-  }
+
   function removeSong(s, row) {
     const finish = () => {
       MS.audio.forget(s.id);
@@ -248,12 +193,12 @@
     const vis = visibleSongs();
     MS.orbit.setSongs(all);
     MS.orbit.setVisible(filtering() ? new Set(vis.map((s) => s.id)) : null);
-    paintChips(); paintSystems(); renderRows();
+    renderRows();
     MS.emit('library:change');
     if (state.sel) renderPanel();
     el.empty.hidden = all.length > 0;
     if (!all.length) el.count.textContent = '';
-    else if (filtering()) el.count.textContent = vis.length ? `Mostrando ${vis.length} de ${all.length} ${U.plural(all.length, 'música', 'músicas')}.` : 'Nenhuma música encontrada. Limpe a busca ou escolha outro humor.';
+    else if (filtering()) el.count.textContent = vis.length ? `Mostrando ${vis.length} de ${all.length} ${U.plural(all.length, 'música', 'músicas')}.` : 'Nenhuma música encontrada. Tente outra busca.';
     else el.count.textContent = `${all.length} ${U.plural(all.length, 'música', 'músicas')} no seu universo.`;
   }
 
@@ -289,6 +234,9 @@
     $$('.row', el.rows).forEach((r) => {
       const on = !!s && playing && r.dataset.id === s.id;
       r.classList.toggle('is-playing', on);
+      const button = $('[data-act="play"]', r);
+      const song = MS.store.get(r.dataset.id);
+      if (button && song) button.setAttribute('aria-label', `${on ? 'Pausar' : 'Ouvir'} ${song.title}`);
       const u = $('[data-act="play"] use', r);
       if (u) u.setAttribute('href', on ? '#i-pause' : '#i-play');
     });
@@ -365,8 +313,6 @@
   const prev = $('#previewPlanet');
   let opener = null, files = [], importing = false, reroll = 0, prevQueued = false;
 
-  $('#moodPick').innerHTML = MS.MOODS.map((m, i) =>
-    `<label class="mood-opt"><input type="radio" name="mood" value="${m.id}"${m.id === 'noturno' ? ' checked' : ''}><span style="--c:hsl(${m.hue} 85% 68%)"><i></i>${m.name}</span></label>`).join('');
 
   function currentSeed() {
     const base = U.hash((form.title.value.trim().toLowerCase() || 'novo') + '|' + reroll);
@@ -505,7 +451,7 @@
     if (needScroll) $('#universo').scrollIntoView({ behavior: U.reduce ? 'auto' : 'smooth' });
     const delay = needScroll && !U.reduce ? 750 : 380;
     setTimeout(() => {
-      if (state.view === 'orbit') MS.orbit.launchComet(song, () => selectSong(song.id));
+      if (state.view === 'orbit') MS.orbit.launchComet(song, () => { if (saved.length === 1) selectSong(song.id); });
       toast(saved.length === 1 ? 'Música guardada.' : saved.length + ' músicas guardadas.');
     }, delay);
   });
@@ -536,8 +482,6 @@
   };
 
   /* ---------- início ---------- */
-  buildChips();
-  buildSystems();
   refresh();
   MS.mood; // garante o namespace carregado
 })();

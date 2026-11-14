@@ -36,23 +36,14 @@
 <canvas id="cosmos" aria-hidden="true"></canvas>
 
 <header class="nav" id="nav">
-  <a class="brand" href="#top" aria-label="Music Space, início">
-    <img class="brand-mark" src="assets/icon-192.png?v=spiral-2" width="30" height="30" alt="">
-    <span>Music Space</span>
-  </a>
+  <button class="btn btn-ghost btn-sm" id="installApp" type="button" hidden>Baixar app</button>
   <nav class="nav-links" aria-label="Biblioteca musical">
     <a href="#top">Início</a>
     <a href="#musicas">Músicas</a>
     <a href="#playlists">Playlists</a>
-    <a href="#albuns">Álbuns</a>
-    <a href="#artistas">Artistas</a>
-    <details class="nav-more"><summary>Explorar</summary><div>
-      <a href="#universo">Meu universo</a><a href="#favoritas">Favoritas</a>
-      <a href="#sistemas">Humores</a><a href="#como-funciona">Como funciona</a>
-    </div></details>
   </nav>
-  <button class="btn btn-ghost btn-sm" type="button" data-open-add>
-    <svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>Adicionar música
+  <button class="btn btn-primary btn-sm" type="button" data-open-add>
+    <svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>Adicionar Músicas
   </button>
   <i class="nav-progress" id="navProgress" aria-hidden="true"></i>
 </header>
@@ -115,7 +106,7 @@
     <div class="wrap">
       <header class="section-head">
         <h2 id="uniTitle">Seu universo</h2>
-        <p>Cada música que você guarda vira um planeta, e a órbita é o humor. Passe o mouse para ver, clique para ouvir.</p>
+        <p>Suas músicas distribuídas entre todas as órbitas. Escolha um planeta para ouvir.</p>
       </header>
 
       <div class="toolbar">
@@ -123,7 +114,7 @@
           <svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
           <input id="q" type="search" placeholder="Buscar música, artista ou gênero" autocomplete="off" aria-label="Buscar música, artista ou gênero">
         </label>
-        <div class="chips" id="chips" role="group" aria-label="Filtrar por humor"></div>
+
         <div class="seg" role="group" aria-label="Modo de visualização">
           <button class="seg-btn" type="button" data-view="orbit" aria-pressed="true">Órbita</button>
           <button class="seg-btn" type="button" data-view="list" aria-pressed="false">Lista</button>
@@ -135,7 +126,7 @@
         <div class="tip" id="tip" hidden></div>
         <div class="empty" id="empty" hidden>
           <h3>Seu universo está vazio</h3>
-          <p>Adicione a primeira música e ela vira um planeta na órbita do humor que você escolher.</p>
+          <p>Adicione suas músicas e veja seus planetas se espalharem pelas órbitas.</p>
           <button class="btn btn-primary" type="button" data-open-add>Adicionar música</button>
         </div>
         <aside class="panel" id="panel" hidden aria-label="Detalhes da música"></aside>
@@ -144,7 +135,7 @@
       <div class="listbox" id="viewList" hidden>
         <ol class="rows" id="rows"></ol>
         <div class="empty-list" id="emptyList" hidden>
-          <p>Nenhuma música encontrada. Limpe a busca ou escolha outro humor.</p>
+          <p>Nenhuma música encontrada. Adicione músicas ou tente outra busca.</p>
         </div>
       </div>
 
@@ -155,81 +146,10 @@
   <section class="section collections" id="colecoes" data-page="collections" hidden aria-labelledby="collectionsTitle">
     <div class="wrap">
       <header class="section-head"><p class="eyebrow">SUA BIBLIOTECA MUSICAL</p><h2 id="collectionsTitle">Playlists</h2><p id="collectionsDescription"></p></header>
+      <div class="playlist-toolbar"><button class="btn btn-primary" id="newPlaylist" type="button"><svg class="i"><use href="#i-plus"/></svg>Criar playlist</button></div>
       <div id="collectionCards" class="collection-grid"></div>
-      <form id="playlistForm" class="playlist-form" hidden>
-        <h3>Criar uma playlist</h3>
-        <label class="field">Nome da playlist<input name="playlistName" maxlength="60" required placeholder="Uma trilha para cada momento"></label>
-        <fieldset><legend>Escolha as músicas</legend><div id="playlistSongs" class="playlist-songs"></div></fieldset>
-        <button class="btn btn-primary" type="submit">Guardar playlist</button>
-        <p id="playlistStatus" role="status"></p>
-      </form>
-    </div>
-  </section>
-
-  <!-- ============ SISTEMAS ============ -->
-  <section class="section systems" id="sistemas" data-page="sistemas" hidden aria-labelledby="sysTitle">
-    <div class="wrap">
-      <header class="section-head">
-        <h2 id="sysTitle">Cinco sistemas, cinco humores</h2>
-        <p>Ao guardar uma música, você escolhe o humor e ela entra na órbita certa. Toque em um sistema para ver só aquelas músicas.</p>
-      </header>
-      <ul class="sys-row" id="systems"></ul>
-    </div>
-  </section>
-
-  <!-- ============ COMO FUNCIONA ============ -->
-  <section class="section how" id="como-funciona" data-page="como-funciona" hidden aria-labelledby="howTitle">
-    <div class="wrap">
-      <header class="section-head">
-        <h2 id="howTitle">Do link ao planeta em três passos</h2>
-        <p>Nada de conta, nada de cadastro. Suas músicas ficam salvas neste navegador.</p>
-      </header>
-
-      <ol class="steps" id="steps">
-        <li class="step">
-          <div class="step-art" aria-hidden="true">
-            <svg viewBox="0 0 320 190">
-              <defs>
-                <radialGradient id="sg1" cx="32%" cy="28%" r="80%"><stop offset="0" stop-color="#e0d5ff"/><stop offset=".5" stop-color="#a58cf2"/><stop offset="1" stop-color="#0D1B26"/></radialGradient>
-                <linearGradient id="tail" x1="0" x2="1"><stop offset="0" stop-color="#F2B56B" stop-opacity="0"/><stop offset="1" stop-color="#F4F1EA"/></linearGradient>
-              </defs>
-              <circle cx="214" cy="104" r="40" fill="url(#sg1)" class="a1-planet"/>
-              <g class="a1-comet"><rect x="40" y="46" width="96" height="3" rx="1.5" fill="url(#tail)" transform="rotate(24 40 46)"/><circle cx="131" cy="86" r="4.5" fill="#F4F1EA"/></g>
-              <circle cx="214" cy="104" r="40" fill="none" stroke="#F2B56B" stroke-width="1.5" class="a1-pulse"/>
-            </svg>
-          </div>
-          <h3><b>1</b>Traga a música</h3>
-          <p>Envie arquivos de áudio ou vídeo, como MP3 e MP4, ou cole o link de onde a música está.</p>
-        </li>
-        <li class="step">
-          <div class="step-art" aria-hidden="true">
-            <svg viewBox="0 0 320 190">
-              <circle cx="160" cy="95" r="9" fill="#F2B56B"/>
-              <circle cx="160" cy="95" r="26" fill="none" stroke="#F2B56B" stroke-opacity=".28"/>
-              <circle cx="160" cy="95" r="46" fill="none" stroke="#F2B56B" stroke-opacity=".28"/>
-              <circle cx="160" cy="95" r="68" fill="none" stroke="#F2B56B" stroke-opacity=".28"/>
-              <g class="a2-orbit o1"><circle cx="186" cy="95" r="5" fill="#F2B56B"/></g>
-              <g class="a2-orbit o2"><circle cx="206" cy="95" r="7" fill="#70B7D9"/></g>
-              <g class="a2-orbit o3"><circle cx="228" cy="95" r="9" fill="#F2B56B"/></g>
-            </svg>
-          </div>
-          <h3><b>2</b>Escolha a órbita</h3>
-          <p>Marque o humor. A música entra no sistema certo e ganha um planeta só dela.</p>
-        </li>
-        <li class="step">
-          <div class="step-art" aria-hidden="true">
-            <svg viewBox="0 0 320 190">
-              <circle cx="160" cy="95" r="34" fill="none" stroke="#F2B56B" stroke-width="1.5" class="a3-ring r1"/>
-              <circle cx="160" cy="95" r="34" fill="none" stroke="#F2B56B" stroke-width="1.5" class="a3-ring r2"/>
-              <circle cx="160" cy="95" r="34" fill="none" stroke="#F2B56B" stroke-width="1.5" class="a3-ring r3"/>
-              <circle cx="160" cy="95" r="34" fill="url(#sg1)"/>
-              <path d="M152 80v30l26-15z" fill="#e9e2ff"/>
-            </svg>
-          </div>
-          <h3><b>3</b>Dê o play</h3>
-          <p>Toque no planeta. O player fica na tela enquanto você navega pelo resto do site.</p>
-        </li>
-      </ol>
+      <div id="playlistDetail" hidden></div>
+      <p id="playlistStatus" role="status" aria-live="polite"></p>
     </div>
   </section>
 
@@ -238,7 +158,7 @@
     <canvas id="warp" aria-hidden="true"></canvas>
     <div class="final-in">
       <h2 id="finalTitle">Seu primeiro planeta leva um minuto.</h2>
-      <p>Escolha uma música, marque o humor e veja ela entrar em órbita.</p>
+      <p>Escolha suas músicas e veja seus planetas entrarem em órbita.</p>
       <button class="btn btn-primary btn-lg" type="button" id="finalBtn" data-open-add>Adicionar música</button>
     </div>
   </section>
@@ -282,7 +202,7 @@
     <div class="modal-preview">
       <canvas id="previewPlanet" width="320" height="320" aria-hidden="true"></canvas>
       <button type="button" class="btn btn-text btn-sm" id="reroll">Sortear outro planeta</button>
-      <p class="preview-note">O planeta muda conforme o nome e o humor.</p>
+      <p class="preview-note">Cada música ganha seu próprio planeta.</p>
     </div>
     <div class="modal-fields">
       <button type="button" class="icon-btn modal-x" data-close aria-label="Fechar"><svg class="i"><use href="#i-close"/></svg></button>
@@ -296,11 +216,8 @@
         <input name="artist" maxlength="60" autocomplete="off">
       </label>
 
-      <p id="batchHint" class="preview-note" hidden>Cada arquivo vira uma música com seu próprio nome. Artista, álbum, gênero e humor serão aplicados a todas as selecionadas.</p>
-      <fieldset class="mood-pick">
-        <legend>Humor</legend>
-        <div id="moodPick"></div>
-      </fieldset>
+      <p id="batchHint" class="preview-note" hidden>Cada arquivo vira uma música com seu próprio nome. Artista, álbum e gênero serão aplicados a todas as selecionadas.</p>
+<input type="hidden" name="mood" value="noturno">
 
       <label class="field">Álbum (opcional)
         <input name="album" maxlength="80" autocomplete="off" placeholder="Nome do álbum">
@@ -331,11 +248,29 @@
   </form>
 </div>
 
+<dialog id="playlistDialog" class="library-dialog" aria-labelledby="playlistDialogTitle">
+  <form id="playlistForm">
+    <h2 id="playlistDialogTitle">Criar playlist</h2>
+    <label class="field">Nome da playlist<input name="playlistName" maxlength="60" required autocomplete="off" placeholder="Minha playlist"></label>
+    <p id="playlistDialogError" role="alert"></p>
+    <div class="modal-actions"><button class="btn btn-ghost" type="button" id="cancelPlaylist">Cancelar</button><button class="btn btn-primary" type="submit">Salvar</button></div>
+  </form>
+</dialog>
+<dialog id="playlistPicker" class="library-dialog" aria-labelledby="pickerTitle">
+  <h2 id="pickerTitle">Adicionar à playlist</h2><div id="pickerOptions"></div>
+  <button class="btn btn-ghost" id="closePicker" type="button">Fechar</button>
+</dialog>
+<dialog id="installHelp" class="library-dialog" aria-labelledby="installTitle">
+  <h2 id="installTitle">Instalar Music Space</h2>
+  <p>No Chrome ou Edge, abra o menu do navegador e escolha “Instalar aplicativo”. No iPhone ou iPad, abra no Safari e use Compartilhar → Adicionar à Tela de Início.</p>
+  <form method="dialog"><button class="btn btn-primary">Entendi</button></form>
+</dialog>
 <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
 
 <script src="js/core.js"></script>
 <script src="js/audio.js"></script>
 <script src="js/cosmos.js"></script>
+<script src="js/library-model.js"></script>
 <script src="js/orbit.js"></script>
 <script src="js/import.js"></script>
 <script src="js/app.js"></script>
